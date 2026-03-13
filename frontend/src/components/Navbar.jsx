@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-scroll';
 import { Menu, X } from 'lucide-react';
+import logo from '../assets/favicon.png';
 
 const navItems = [
   { name: 'Home', to: 'home' },
@@ -26,9 +27,12 @@ const Navbar = () => {
   return (
     <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'glass py-3' : 'bg-transparent py-6'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="text-xl sm:text-2xl font-bold tracking-tighter">
-          <span className="text-white">Lak</span>
-          <span className="text-red-500">shay</span>
+        <div className="flex items-center gap-2 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src={logo} alt="Lakshay Logo" className="w-10 h-10 md:w-12 md:h-12 group-hover:scale-110 transition-transform duration-300" />
+          <div className="hidden sm:block text-xl md:text-2xl font-bold tracking-tighter">
+            <span className="text-white">Lak</span>
+            <span className="text-red-500">shay</span>
+          </div>
         </div>
 
         {/* Desktop Nav */}
@@ -46,9 +50,9 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
-          <a 
-            href="/Lakshay CV.pdf" 
-            download 
+          <a
+            href="/Lakshay CV.pdf"
+            download
             className="text-xs font-bold uppercase tracking-widest bg-red-600 px-6 py-2.5 rounded-full text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 transition-all active:scale-95"
           >
             download resume!
@@ -56,8 +60,8 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden p-2 text-slate-300 hover:text-white transition-colors" 
+        <button
+          className="md:hidden p-2 text-slate-300 hover:text-white transition-colors"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
@@ -80,9 +84,9 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
-          <a 
-            href="/Lakshay CV.pdf" 
-            download 
+          <a
+            href="/Lakshay CV.pdf"
+            download
             className="text-sm font-bold uppercase tracking-widest bg-red-600 px-8 py-3 rounded-full text-white active:scale-95 transition-transform"
           >
             download resume!
