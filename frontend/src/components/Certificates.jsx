@@ -6,31 +6,31 @@ const certificates = [
     title: "Master Generative AI & Generative AI Tools ( ChatGPT & More )",
     issuer: "Udemy",
     date: "Aug, 2025",
-    link: "#"
+    link: "https://drive.google.com/file/d/13ICN96ZAK89KfZ0hqRjB5JDUD7pyMYii/view"
   },
   {
     title: "Computational Theory: Language Principle & Finite Automata Theory",
     issuer: "Infosys Springboard",
     date: "Aug, 2025",
-    link: "#"
+    link: "https://drive.google.com/file/d/1GmTwsMLuO1qyONl0Cpde-RSfh_eqVY52/view"
   },
   {
     title: "Aptech Certified Professional in C/C++ Programming",
     issuer: "Aptech Institute",
     date: "June, 2024",
-    link: "#"
+    link: "https://drive.google.com/file/d/15wR62pFMsR2PemgpHpYtKPoQG7daXL9B/view?usp=sharing"
   },
   {
     title: "JAVA PROGRAMIN",
     issuer: "Lovely Professional university | IAMNEO Platform",
     date: "May, 2024",
-    link: "#"
+    link: "https://drive.google.com/file/d/1Mo2j4_YcuKombnqfDaurv0XnEh61DCGd/view?usp=sharing"
   },
   {
     title: "Responsive Web Design",
     issuer: "Free Code Camp",
     date: "Sep, 2023",
-    link: "#"
+    link: "https://drive.google.com/file/d/1RanN4_5XwtZ5cBAGdPJhQc8t9vPGDyVV/view?usp=sharing"
   }
 ];
 
@@ -66,10 +66,10 @@ const Certificates = () => {
                 <div className="p-3 rounded-xl bg-red-500/10 text-accent group-hover:bg-red-500/20 transition-colors">
                   <Award size={24} />
                 </div>
-                <a 
-                  href={cert.link} 
-                  target="_blank" 
-                  rel="noreferrer" 
+                <a
+                  href={cert.link}
+                  target="_blank"
+                  rel="noreferrer"
                   className="text-slate-400 hover:text-accent transition-colors"
                 >
                   <ExternalLink size={20} />
