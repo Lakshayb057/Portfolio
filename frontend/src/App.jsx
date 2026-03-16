@@ -20,8 +20,8 @@ function App() {
         <About />
         <Skills />
         <Experience />
-        <Projects />
         <Certificates />
+        <Projects />
         <Contact />
       </main>
       <Footer />
