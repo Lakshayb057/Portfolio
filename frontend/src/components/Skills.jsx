@@ -102,7 +102,7 @@ const SkillBadge = ({ skill, index }) => {
 
 const Skills = () => {
   return (
-    <section id="skills" className="py-24 relative px-6 overflow-hidden">
+    <section id="skills" className="py-24 relative px-6 md:px-12 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         <motion.div 
