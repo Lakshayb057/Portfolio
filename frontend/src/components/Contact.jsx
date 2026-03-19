@@ -31,8 +31,8 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 relative px-6">
-      <div className="max-w-5xl mx-auto">
+    <section id="contact" className="pt-24 pb-8 relative px-6 md:px-12">
+      <div className="max-w-7xl mx-auto">
         <motion.div
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +150,7 @@ const Contact = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-20 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
+      <div className="flex justify-center mt-12 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
         <Link to="home" smooth={true} duration={500}>
           <ChevronUp size={40} />
         </Link>
