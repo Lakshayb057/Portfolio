@@ -11,7 +11,7 @@ const Contact = () => {
     e.preventDefault();
 
     // The form needs to know WHICH email to send to!
-    const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+    const WEB3FORMS_ACCESS_KEY = "d97e7bba-32fd-40f0-b204-ce29b3259dce";
     
     if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
       setStatus("Setup Required: Please add your Access Key in Contact.jsx");
