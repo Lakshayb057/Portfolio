@@ -51,117 +51,124 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="pt-24 pb-8 relative px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
+    <section id="contact" className="pt-24 pb-8 relative px-6 md:px-12" style={{ perspective: 1800 }}>
+      <div className="max-w-7xl mx-auto" style={{ transformStyle: "preserve-3d" }}>
         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
+           initial={{ opacity: 0, y: 100, rotateX: 30, z: -200 }}
+           whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+           transition={{ duration: 0.8, type: "spring" }}
            viewport={{ once: false, amount: 0.2 }}
            className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">Get In Touch</h2>
-          <p className="text-slate-400 max-w-xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4 drop-shadow-md">Get In Touch</h2>
+          <p className="text-slate-300 max-w-xl mx-auto font-medium drop-shadow-lg">
             Currently looking for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
           </p>
         </motion.div>
 
-        <div className="flex flex-col md:flex-row gap-12">
+        <div className="flex flex-col md:flex-row gap-12" style={{ transformStyle: "preserve-3d" }}>
           {/* Contact Info */}
           <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -100, rotateY: 30, z: -200 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0, z: 0 }}
             viewport={{ once: false, amount: 0.2 }}
+            transition={{ duration: 0.8, type: "spring" }}
             className="md:w-1/3 space-y-8"
+            style={{ transformStyle: "preserve-3d" }}
           >
-            <div className="flex items-start space-x-4">
-              <div className="p-3 glass rounded-xl text-accent">
+            <motion.div whileHover={{ scale: 1.1, rotateY: -15, z: 50 }} className="flex items-start space-x-4 glass p-4 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.3)] cursor-pointer">
+              <div className="p-3 bg-red-500/10 rounded-xl text-accent">
                 <Mail size={24} />
               </div>
-              <div>
-                <h4 className="text-lg font-semibold text-white">Email</h4>
-                <a href="mailto:Lakshayb057@gmail.com" className="text-slate-400 hover:text-accent transition-colors">Lakshayb057@gmail.com</a>
+              <div style={{ transform: "translateZ(20px)" }}>
+                <h4 className="text-lg font-bold text-white drop-shadow-md">Email</h4>
+                <a href="mailto:Lakshayb057@gmail.com" className="text-slate-300 font-medium hover:text-red-400 transition-colors">Lakshayb057@gmail.com</a>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="flex items-start space-x-4">
-              <div className="p-3 glass rounded-xl text-highlight">
+            <motion.div whileHover={{ scale: 1.1, rotateY: -15, z: 50 }} className="flex items-start space-x-4 glass p-4 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.3)] cursor-pointer">
+              <div className="p-3 bg-red-500/10 rounded-xl text-highlight">
                 <Phone size={24} />
               </div>
-              <div>
-                <h4 className="text-lg font-semibold text-white">Phone</h4>
-                <a href="tel:+918295886832" className="text-slate-400 hover:text-highlight transition-colors">+91 8295886832</a>
+              <div style={{ transform: "translateZ(20px)" }}>
+                <h4 className="text-lg font-bold text-white drop-shadow-md">Phone</h4>
+                <a href="tel:+918295886832" className="text-slate-300 font-medium hover:text-red-400 transition-colors">+91 8295886832</a>
               </div>
-            </div>
+            </motion.div>
             
-            <div className="flex items-start space-x-4">
-              <div className="p-3 glass rounded-xl text-emerald-400">
+            <motion.div whileHover={{ scale: 1.1, rotateY: -15, z: 50 }} className="flex items-start space-x-4 glass p-4 rounded-xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:shadow-[0_0_30px_rgba(239,68,68,0.3)] cursor-pointer">
+              <div className="p-3 bg-red-500/10 rounded-xl text-emerald-400">
                 <MapPin size={24} />
               </div>
-              <div>
-                <h4 className="text-lg font-semibold text-white">Location</h4>
-                <span className="text-slate-400">Punjab / Haryana, India</span>
+              <div style={{ transform: "translateZ(20px)" }}>
+                <h4 className="text-lg font-bold text-white drop-shadow-md">Location</h4>
+                <span className="text-slate-300 font-medium">Punjab / Haryana, India</span>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Contact Form */}
           <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 100, rotateY: -30, z: -200 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0, z: 0 }}
             viewport={{ once: false, amount: 0.2 }}
-            className="md:w-2/3 glass p-8 rounded-2xl border border-white/5"
+            transition={{ duration: 0.8, type: "spring" }}
+            whileHover={{ scale: 1.02, rotateX: 5, rotateY: 5, z: 50, transition: { type: "spring", stiffness: 300 } }}
+            className="md:w-2/3 glass p-8 rounded-2xl border border-red-500/20 shadow-[0_0_30px_rgba(0,0,0,0.4)] hover:shadow-[0_0_60px_rgba(239,68,68,0.3)]"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" style={{ transform: "translateZ(20px)" }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-slate-300 mb-2">Your Name</label>
+                  <label htmlFor="name" className="block text-sm font-bold text-white drop-shadow-sm mb-2">Your Name</label>
                   <input
                     type="text"
                     id="name"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    className="w-full bg-white/5 border border-red-500/20 rounded-xl px-4 py-3 text-white font-medium focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 shadow-inner transition-all hover:bg-white/10"
                     placeholder="John Doe"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">Your Email</label>
+                  <label htmlFor="email" className="block text-sm font-bold text-white drop-shadow-sm mb-2">Your Email</label>
                   <input
                     type="email"
                     id="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                    className="w-full bg-white/5 border border-red-500/20 rounded-xl px-4 py-3 text-white font-medium focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 shadow-inner transition-all hover:bg-white/10"
                     placeholder="john@example.com"
                   />
                 </div>
               </div>
               
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-slate-300 mb-2">Message</label>
+                <label htmlFor="message" className="block text-sm font-bold text-white drop-shadow-sm mb-2">Message</label>
                 <textarea
                   id="message"
                   required
                   rows="5"
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all resize-none"
+                  className="w-full bg-white/5 border border-red-500/20 rounded-xl px-4 py-3 text-white font-medium focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 shadow-inner transition-all hover:bg-white/10 resize-none"
                   placeholder="Hello, I'd like to talk about..."
                 ></textarea>
               </div>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="w-full md:w-auto px-8 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 transition-all flex items-center justify-center group"
+                className="w-full md:w-auto px-8 py-3 bg-red-600 text-white rounded-xl font-bold border border-red-500/50 hover:bg-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.8)] transition-all flex items-center justify-center group"
               >
                 Send Message
                 <Send size={18} className="ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </button>
+              </motion.button>
 
               {status && (
-                 <p className={`text-sm mt-4 font-medium ${status.includes('Success') ? 'text-emerald-400' : 'text-amber-400'}`}>
+                 <p className={`text-sm mt-4 font-bold drop-shadow-lg ${status.includes('Success') ? 'text-emerald-400' : 'text-amber-400'}`}>
                    {status}
                  </p>
               )}
@@ -170,11 +177,17 @@ const Contact = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-12 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="flex justify-center mt-12 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
+      >
         <Link to="home" smooth={true} duration={500}>
-          <ChevronUp size={40} />
+          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
+            <ChevronUp size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 };

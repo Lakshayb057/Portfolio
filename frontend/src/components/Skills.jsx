@@ -52,35 +52,29 @@ const skillCategories = [
 const SkillBadge = ({ skill, index }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: false }}
+      initial={{ opacity: 0, scale: 0, rotateX: 90, z: -200 }}
+      whileInView={{ opacity: 1, scale: 1, rotateX: 0, z: 0 }}
+      viewport={{ once: false, amount: 0.1 }}
       transition={{ 
         delay: index * 0.05,
         type: "spring",
         stiffness: 100,
-        y: {
-          duration: Math.random() * 2 + 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      }}
-      animate={{
-        y: [0, Math.random() * -15 - 5, 0],
+        bounce: 0.5,
       }}
       whileHover={{ 
-        scale: 1.15, 
-        y: -5,
-        transition: { duration: 0.2 }
+        scale: 1.4, 
+        rotateY: 20,
+        rotateX: -20,
+        z: 100,
+        transition: { type: "spring", stiffness: 300 }
       }}
-      className="group relative flex flex-col items-center justify-center p-2 sm:p-4"
+      style={{ transformStyle: "preserve-3d" }}
+      className="group relative flex flex-col items-center justify-center p-2 sm:p-4 cursor-pointer"
     >
-      {/* Glow Effect */}
-      <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/10 rounded-full blur-2xl transition-all duration-500" />
+      <div className="absolute inset-0 bg-red-500/0 group-hover:bg-red-500/20 rounded-full blur-2xl transition-all duration-300" />
       
-      {/* Icon Container */}
-      <div className="relative z-10 mb-2 sm:mb-3 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_15px_rgba(var(--accent-rgb),0.4)] transition-all duration-300">
-        <div className="text-3xl sm:text-4xl md:text-5xl flex items-center justify-center group-hover:scale-110 transition-transform">
+      <div className="relative z-10 mb-2 sm:mb-3 filter drop-shadow-[0_0_8px_rgba(255,255,255,0.1)] group-hover:drop-shadow-[0_0_20px_rgba(239,68,68,0.8)] transition-all duration-300 transform group-hover:-translate-y-2">
+        <div className="text-3xl sm:text-4xl md:text-5xl flex items-center justify-center transition-transform">
           {skill.icon ? (
             <i className={`${skill.icon} transition-all`} />
           ) : (
@@ -89,32 +83,29 @@ const SkillBadge = ({ skill, index }) => {
         </div>
       </div>
       
-      {/* Name */}
-      <span className="relative z-10 text-[10px] md:text-xs font-mono tracking-widest text-slate-500 group-hover:text-white transition-colors uppercase">
+      <span className="relative z-10 text-[10px] md:text-xs font-mono tracking-widest text-slate-500 group-hover:text-red-300 group-hover:font-bold transition-colors uppercase drop-shadow-md">
         {skill.name}
       </span>
-
-      {/* Connection line decorator (Visual only) */}
-      <div className="absolute top-1/2 left-full w-4 h-px bg-white/5 group-hover:bg-accent/20 hidden lg:block" />
     </motion.div>
   );
 };
 
 const Skills = () => {
   return (
-    <section id="skills" className="py-24 relative px-6 md:px-12 overflow-hidden">
+    <section id="skills" className="py-24 relative px-6 md:px-12 overflow-hidden" style={{ perspective: 1500 }}>
       <div className="max-w-7xl mx-auto">
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 100, rotateX: -45, z: -200 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+          transition={{ duration: 0.8, type: "spring" }}
           viewport={{ once: false }}
           className="mb-24 text-center"
         >
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white mb-6">
-            Technical <span className="text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.3)]">Nebula</span>
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white mb-6 transform hover:scale-105 transition-transform">
+            Technical <span className="text-red-500 drop-shadow-[0_0_20px_rgba(239,68,68,0.6)]">Nebula</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto font-medium drop-shadow-md leading-relaxed">
             Breaking the boundaries of traditional grids. A fluid ecosystem of technologies I've mastered to bridge the gap between imagination and digital reality.
           </p>
         </motion.div>
@@ -122,23 +113,27 @@ const Skills = () => {
         <div className="space-y-24">
           {skillCategories.map((category, catIdx) => (
             <div key={category.title} className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-20">
-              {/* Category label - Integrated */}
+              {/* Category label */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -100, rotateY: 30 }}
+                whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
                 viewport={{ once: false }}
+                transition={{ duration: 0.8, type: "spring" }}
                 className="lg:w-1/4 pt-4 shrink-0 text-center lg:text-left"
               >
                 <div className="inline-flex items-center space-x-3 mb-2">
-                  <div className="w-6 h-px bg-accent/50" />
-                  <span className="text-xs font-mono text-accent uppercase tracking-[0.3em]">
+                  <div className="w-6 h-px bg-red-500" />
+                  <span className="text-sm font-bold text-red-400 uppercase tracking-[0.3em] drop-shadow-[0_0_10px_rgba(239,68,68,0.4)]">
                     {category.title}
                   </span>
                 </div>
               </motion.div>
 
-              {/* Floating skills nebula - More compact */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-10 md:gap-x-10 md:gap-y-12 py-2 flex-grow">
+              {/* Floating skills nebula */}
+              <div 
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-10 md:gap-x-10 md:gap-y-12 py-2 flex-grow"
+                style={{ transformStyle: "preserve-3d" }}
+              >
                 {category.skills.map((skill, idx) => (
                   <SkillBadge 
                     key={skill.name} 
@@ -152,12 +147,17 @@ const Skills = () => {
         </div>
       </div>
 
-      {/* Navigation Arrow */}
-      <div className="flex justify-center mt-32 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="flex justify-center mt-32 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
+      >
         <Link to="experience" smooth={true} duration={500}>
-          <ChevronDown size={40} />
+          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
+             <ChevronDown size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 };

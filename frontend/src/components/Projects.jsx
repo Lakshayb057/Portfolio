@@ -35,62 +35,72 @@ const projects = [
 
 const Projects = () => {
   return (
-    <section id="projects" className="py-24 relative px-6 md:px-12 bg-transparent overflow-hidden">
+    <section id="projects" className="py-24 relative px-6 md:px-12 bg-transparent overflow-hidden" style={{ perspective: 1800 }}>
       {/* Background Red Ambiance */}
       <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-red-500/10 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-900/10 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
-      <div className="max-w-7xl mx-auto">
+      
+      <div className="max-w-7xl mx-auto" style={{ transformStyle: "preserve-3d" }}>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 100, rotateX: -30, z: -200 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
           viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.8, type: "spring" }}
           className="flex items-center justify-between mb-16 px-2"
         >
           <div className="flex items-center space-x-4 w-full">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white whitespace-nowrap italic">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white whitespace-nowrap italic drop-shadow-md">
               Featured <span className="text-gradient">Projects</span>
             </h2>
             <div className="h-px bg-red-500/20 flex-grow" />
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10" style={{ transformStyle: "preserve-3d" }}>
           {projects.map((project, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.8, rotateX: -45, rotateY: idx % 2 === 0 ? -20 : 20, z: -300 }}
+              whileInView={{ opacity: 1, scale: 1, rotateX: 0, rotateY: 0, z: 0 }}
               viewport={{ once: false, amount: 0.2 }}
-              transition={{ delay: idx * 0.1, duration: 0.5 }}
-              className="glass p-8 rounded-2xl border border-red-500/10 hover:border-red-500/30 transition-all group flex flex-col h-full hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/10"
+              transition={{ delay: idx * 0.1, duration: 0.6, type: "spring", bounce: 0.4 }}
+              whileHover={{ 
+                scale: 1.05, 
+                rotateX: Math.random() > 0.5 ? 5 : -5, 
+                rotateY: Math.random() > 0.5 ? 5 : -5, 
+                z: 100,
+                transition: { type: "spring", stiffness: 300 }
+              }}
+              style={{ transformStyle: "preserve-3d" }}
+              className="glass p-8 rounded-2xl border border-red-500/20 hover:border-red-500/50 transition-all group flex flex-col h-full shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_50px_rgba(239,68,68,0.4)] cursor-pointer"
             >
-              <div className="flex justify-between items-center mb-8">
-                <Folder className="text-accent" size={40} />
+              <div className="flex justify-between items-center mb-8" style={{ transform: "translateZ(30px)" }}>
+                <Folder className="text-accent group-hover:scale-110 transition-transform" size={40} />
                 <div className="flex space-x-4">
                   {project.github && (
                     <a href={project.github} className="text-slate-400 hover:text-white transition-colors">
-                      <Github size={20} />
+                      <Github size={24} className="group-hover:scale-125 transition-transform" />
                     </a>
                   )}
                   {project.live && (
                     <a href={project.live} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-accent transition-colors">
-                      <ExternalLink size={20} />
+                      <ExternalLink size={24} className="group-hover:scale-125 transition-transform" />
                     </a>
                   )}
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-accent transition-colors">
+              <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-accent transition-colors drop-shadow-md" style={{ transform: "translateZ(40px)" }}>
                 {project.title}
               </h3>
 
-              <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-grow">
+              <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-grow" style={{ transform: "translateZ(20px)" }}>
                 {project.description}
               </p>
 
-              <ul className="flex flex-wrap gap-2 mt-auto">
+              <ul className="flex flex-wrap gap-2 mt-auto" style={{ transform: "translateZ(30px)" }}>
                 {project.tech.map((tech, i) => (
-                  <li key={i} className="text-xs font-mono text-highlight bg-highlight/10 px-3 py-1 rounded-full">
+                  <li key={i} className="text-xs font-mono font-bold text-white bg-red-500/20 group-hover:bg-red-500/40 px-3 py-1 rounded-full shadow-lg transition-colors">
                     {tech}
                   </li>
                 ))}
@@ -100,11 +110,17 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-20 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="flex justify-center mt-20 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
+      >
         <Link to="contact" smooth={true} duration={500}>
-          <ChevronDown size={40} />
+          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
+             <ChevronDown size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 };
