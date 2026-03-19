@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-scroll';
-import { Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const navItems = [
   { name: 'Home', to: 'home' },
@@ -14,7 +13,6 @@ const navItems = [
 ];
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [activeItem, setActiveItem] = useState('Home');
 
@@ -33,7 +31,7 @@ const Navbar = () => {
           whileTap={{ scale: 0.95 }}
           className="text-xl sm:text-3xl font-bold tracking-tighter cursor-pointer"
         >
-          <Link to="home" smooth={true} duration={500} spy={true}>
+          <Link to="home" smooth={true} duration={500}>
             <span className="text-white">Lak</span>
             <span className="text-red-500">shay</span>
           </Link>
@@ -93,64 +91,16 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <motion.button
-          whileTap={{ scale: 0.85 }}
-          className="md:hidden p-2 text-slate-300 hover:text-white transition-colors relative z-50 bg-white/5 rounded-full border border-white/10"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
+        {/* Mobile CV Button (Replaces Hamburger) */}
+        <motion.a
+          whileTap={{ scale: 0.95 }}
+          href="/Lakshay CV.pdf"
+          download
+          className="md:hidden px-5 py-2 text-[10px] font-bold uppercase tracking-widest bg-red-600 text-white rounded-full shadow-lg shadow-red-500/20 active:scale-95 transition-transform"
         >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
-        </motion.button>
+          Download CV
+        </motion.a>
       </div>
-
-      {/* Mobile Nav Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -20, transition: { duration: 0.2, ease: "easeInOut" } }}
-            className="absolute top-[85px] left-4 right-4 md:hidden glass border border-white/10 rounded-3xl shadow-2xl overflow-hidden origin-top"
-          >
-            <div className="flex flex-col items-center py-6 space-y-1">
-              {navItems.map((item, i) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 + 0.1, type: "spring", stiffness: 300, damping: 24 }}
-                  className="w-full text-center"
-                >
-                  <Link
-                    to={item.to}
-                    smooth={true}
-                    duration={500}
-                    onClick={() => setIsOpen(false)}
-                    className="block py-3.5 text-lg font-medium text-slate-300 hover:text-white hover:bg-white/5 active:bg-white/10 transition-colors w-[90%] mx-auto rounded-xl"
-                  >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: navItems.length * 0.05 + 0.1, type: "spring" }}
-                className="pt-6 pb-2 w-full px-8"
-              >
-                <a
-                  href="/Lakshay CV.pdf"
-                  download
-                  className="block w-full text-center text-sm font-bold uppercase tracking-widest bg-red-600 px-8 py-4 rounded-full text-white active:scale-95 transition-transform shadow-lg shadow-red-500/30"
-                >
-                  Download Resume
-                </a>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.nav>
   );
 };
