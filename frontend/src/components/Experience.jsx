@@ -96,11 +96,11 @@ const ExperienceCard = ({ exp, index }) => {
 
 const Experience = () => {
   return (
-    <section id="experience" className="py-32 relative px-6 overflow-hidden">
+    <section id="experience" className="py-32 relative px-6 md:px-12 overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute top-1/4 -right-24 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none"></div>
       
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <motion.div
            initial={{ opacity: 0, y: 20 }}
            whileInView={{ opacity: 1, y: 0 }}
