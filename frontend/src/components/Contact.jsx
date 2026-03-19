@@ -9,24 +9,44 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // The form needs to know WHICH email to send to!
+    const WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY_HERE";
+    
+    if (WEB3FORMS_ACCESS_KEY === "YOUR_WEB3FORMS_ACCESS_KEY_HERE") {
+      setStatus("Setup Required: Please add your Access Key in Contact.jsx");
+      return;
+    }
+
     setStatus('Sending...');
     
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json' 
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        })
       });
-      if (res.ok) {
+      
+      const data = await res.json();
+      
+      if (data.success) {
         setStatus('Message Sent Successfully!');
         setFormData({ name: '', email: '', message: '' });
         setTimeout(() => setStatus(''), 3000);
       } else {
-        setStatus('Failed to send message.');
+        setStatus(`Failed: ${data.message || "Unknown API error"}`);
       }
     } catch (err) {
       console.error(err);
-      setStatus('An error occurred. Is the backend running?');
+      setStatus('An error occurred. Please check your console.');
     }
   };
 
