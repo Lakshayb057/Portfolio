@@ -41,32 +41,33 @@ const experiences = [
 const ExperienceCard = ({ exp, index }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, x: -100, rotateY: 30, z: -200 }}
+      whileInView={{ opacity: 1, x: 0, rotateY: 0, z: 0 }}
       viewport={{ once: false, amount: 0.2 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: 0.8, delay: index * 0.1, type: "spring" }}
       className="relative pl-12 md:pl-20 pb-16 last:pb-0"
+      style={{ transformStyle: "preserve-3d" }}
     >
       {/* Vertical Track Segment */}
       <div className="absolute left-4 top-2 bottom-0 w-px bg-red-500/20 md:left-6"></div>
       
       {/* Pulsing Indicator */}
-      <div className="absolute left-0 top-1 w-8 h-8 md:w-12 md:h-12 flex items-center justify-center md:left-0">
-        <div className="absolute inset-0 bg-red-500/20 rounded-full animate-ping scale-75"></div>
-        <div className="relative w-4 h-4 md:w-6 md:h-6 bg-red-500 rounded-full border-4 border-black shadow-[0_0_15px_rgba(239,68,68,0.5)] z-10"></div>
+      <div className="absolute left-0 top-1 w-8 h-8 md:w-12 md:h-12 flex items-center justify-center md:left-0" style={{ transform: "translateZ(40px)" }}>
+        <div className="absolute inset-0 bg-red-500/30 rounded-full animate-ping scale-75 blur-sm"></div>
+        <div className="relative w-4 h-4 md:w-6 md:h-6 bg-red-500 rounded-full border-4 border-black shadow-[0_0_20px_rgba(239,68,68,0.8)] z-10"></div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-12" style={{ transformStyle: "preserve-3d" }}>
         {/* Date / Metadata Sidebar */}
-        <div className="lg:w-1/4 shrink-0">
+        <div className="lg:w-1/4 shrink-0" style={{ transform: "translateZ(30px)" }}>
           <div className="sticky top-24">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-mono mb-3">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-white font-bold text-xs font-mono mb-3 shadow-lg">
               <Calendar size={12} className="mr-2" />
               {exp.date}
             </span>
-            <h3 className="text-xl font-bold text-white mb-1">{exp.role}</h3>
-            <div className="text-red-400 font-medium mb-2">{exp.company}</div>
-            <div className="flex items-center text-slate-500 text-xs">
+            <h3 className="text-xl font-bold text-white mb-1 drop-shadow-md">{exp.role}</h3>
+            <div className="text-red-400 font-bold mb-2 drop-shadow-md">{exp.company}</div>
+            <div className="flex items-center text-slate-400 font-medium text-xs">
               <MapPin size={12} className="mr-1" />
               {exp.location}
             </div>
@@ -75,14 +76,21 @@ const ExperienceCard = ({ exp, index }) => {
 
         {/* Bento Content Card */}
         <motion.div 
-          whileHover={{ y: -5, transition: { duration: 0.2 } }}
-          className="flex-grow glass p-8 rounded-3xl border border-red-500/10 hover:border-red-500/30 hover:bg-red-500/5 transition-all shadow-2xl shadow-red-500/5"
+          whileHover={{ 
+            scale: 1.05, 
+            rotateX: 5, 
+            rotateY: -5, 
+            z: 80, 
+            transition: { type: "spring", stiffness: 300 } 
+          }}
+          style={{ transformStyle: "preserve-3d" }}
+          className="flex-grow glass p-8 rounded-3xl border border-red-500/20 hover:border-red-500/50 transition-all shadow-lg hover:shadow-[0_0_40px_rgba(239,68,68,0.3)] cursor-pointer"
         >
-          <ul className="space-y-4">
+          <ul className="space-y-4" style={{ transform: "translateZ(20px)" }}>
             {exp.points.map((pt, i) => (
               <li key={i} className="flex gap-4 group">
-                <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-red-500/40 mt-2 group-hover:bg-red-500 transition-colors"></span>
-                <p className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-200 transition-colors">
+                <span className="flex-shrink-0 w-2 h-2 rounded-full bg-red-500/40 mt-2 group-hover:bg-red-500 transition-colors shadow-[0_0_10px_rgba(239,68,68,0.5)]"></span>
+                <p className="text-slate-300 font-medium text-sm leading-relaxed group-hover:text-white transition-colors drop-shadow-sm">
                   {pt}
                 </p>
               </li>
@@ -96,35 +104,42 @@ const ExperienceCard = ({ exp, index }) => {
 
 const Experience = () => {
   return (
-    <section id="experience" className="py-32 relative px-6 md:px-12 overflow-hidden">
+    <section id="experience" className="py-32 relative px-6 md:px-12 overflow-hidden" style={{ perspective: 1500 }}>
       {/* Background Decorative Element */}
-      <div className="absolute top-1/4 -right-24 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-1/4 -right-24 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none"></div>
       
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto" style={{ transformStyle: "preserve-3d" }}>
         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
+           initial={{ opacity: 0, y: 100, rotateX: -30, z: -200 }}
+           whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+           transition={{ duration: 0.8, type: "spring" }}
            viewport={{ once: false }}
            className="mb-24"
         >
-          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white mb-6">
-            <span className="text-gradient">Experiences</span>
+          <h2 className="text-4xl md:text-7xl font-bold tracking-tighter text-white mb-6 transform hover:scale-105 transition-transform">
+            <span className="text-gradient drop-shadow-md">Experiences</span>
           </h2>
-          <div className="h-1 w-24 bg-red-500 rounded-full"></div>
+          <div className="h-1 w-24 bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.8)]"></div>
         </motion.div>
 
-        <div className="relative">
+        <div className="relative" style={{ transformStyle: "preserve-3d" }}>
           {experiences.map((exp, idx) => (
             <ExperienceCard key={idx} exp={exp} index={idx} />
           ))}
         </div>
       </div>
 
-      <div className="flex justify-center mt-32 animate-bounce cursor-pointer text-slate-500 hover:text-white transition-colors">
+      <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        className="flex justify-center mt-32 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
+      >
         <Link to="projects" smooth={true} duration={500}>
-          <ChevronDown size={40} />
+          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
+            <ChevronDown size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+          </motion.div>
         </Link>
-      </div>
+      </motion.div>
     </section>
   );
 };
