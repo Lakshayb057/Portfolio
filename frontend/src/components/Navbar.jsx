@@ -23,10 +23,10 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 100, damping: 20 }}
-      className="fixed w-full z-50 top-0 pt-6 flex justify-center items-center px-4 md:px-6"
+      className="fixed w-full z-50 top-0 pt-6 flex justify-center items-center px-4 md:px-12"
     >
       <div 
-        className="w-full max-w-7xl flex justify-between items-center px-6 py-3 rounded-full glass shadow-lg shadow-black/50 border border-white/10"
+        className="w-full max-w-7xl flex justify-between items-center px-5 sm:px-8 py-3 rounded-full glass shadow-lg shadow-black/50 border border-white/10"
       >
         <motion.div 
           whileHover={{ scale: 1.05 }}
@@ -47,8 +47,7 @@ const Navbar = () => {
               to={item.to}
               smooth={true}
               duration={500}
-              spy={true}
-              onSetActive={() => setActiveItem(item.name)}
+              onClick={() => setActiveItem(item.name)}
               className="relative px-3 py-2 text-sm font-medium cursor-pointer transition-colors z-10"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
