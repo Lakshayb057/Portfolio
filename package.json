@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "Portfolio website with React frontend and Node.js backend",
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "cd frontend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm start",
     "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start"
+    "preview": "cd frontend && npm run preview"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -1,27 +1,31 @@
 import React from 'react';
 import AnimatedBackground from './components/AnimatedBackground';
-import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
-import Experience from './components/Experience';
+import Stats from './components/Stats';
+import UniverseSection from './components/UniverseSection';
+import Internships from './components/Internships';
 import Projects from './components/Projects';
-import Certificates from './components/Certificates';
+import Experience from './components/Experience';
+import Education from './components/Education';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="relative w-full h-full text-slate-300">
+    <div className="relative min-h-screen bg-[#09090b] text-zinc-300 selection:bg-red-500 selection:text-white overflow-x-clip">
       <AnimatedBackground />
-      <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <About />
         <Skills />
-        <Experience />
-        <Certificates />
+        <Stats />
+        <UniverseSection />
+        <Internships />
         <Projects />
+        <Experience />
+        <Education />
         <Contact />
       </main>
       <Footer />

@@ -1,126 +1,207 @@
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Folder, ChevronDown } from 'lucide-react';
-import { Link } from 'react-scroll';
+import { ExternalLink, Github, Smartphone, Globe, Layers, ArrowUpRight } from 'lucide-react';
 
-const projects = [
+const projectItems = [
   {
-    title: "NexusCRM",
-    description: "Full-stack Client Relationship Management System enabling streamlined management of leads, contacts, deals, tasks, and sales workflows. Built with a component-driven architecture and a robust REST API featuring JWT authentication.",
-    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
-    github: "https://github.com/Lakshayb057/nexuscrm",
-    live: "https://nexuscrm-client.vercel.app/login"
+    title: "DarshanAI",
+    subtitle: "Smart Pilgrimage & Temple Booking Android App",
+    category: "mobile",
+    categoryLabel: "NATIVE ANDROID (KOTLIN)",
+    description: "Native Android application enabling temple bookings, passenger management, slot scheduling, and digital ticket history. Features OTP-based email verification, QR-code e-tickets, and asynchronous operations with Kotlin Coroutines and Material 3 glassmorphism.",
+    tech: ["Kotlin", "Jetpack Compose", "Android SDK", "Kotlin Coroutines", "JavaMail API", "Material 3"],
+    github: "https://github.com/Lakshay/DarshanAI",
+    badge: "MOBILE APP",
+    highlight: "QR E-Tickets & OTP Flow"
   },
   {
-    title: "Applicant Tracking System (ATS)",
-    description: "Production-ready automated hiring system with AI-powered CV parsing (Affinda). Integrates WhatsApp, Exotel dialer, and SMTP into a multi-channel inbox. Managed on scalable GCP infrastructure.",
-    tech: ["Next.js", "FastAPI / Node.js", "PostgreSQL", "Google Cloud", "AI Integration"],
-    github: "https://github.com/Lakshayb057/ATS",
-    // live: "#"
+    title: "UniVerse",
+    subtitle: "Digital Campus Dining Platform & Multi-Vendor OS",
+    category: "fullstack",
+    categoryLabel: "FLAGSHIP STARTUP",
+    description: "Full-stack campus dining platform serving 1,000+ students and 50+ food vendors. Features real-time order dispatching with Socket.io, Razorpay HMAC SHA-256 payment verification, Telegram vendor alerts, and Cloudinary media optimization.",
+    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Socket.io", "Razorpay", "Tailwind CSS"],
+    live: "https://food.universeorder.co.in",
+    github: "https://github.com/Lakshay/universe",
+    badge: "LIVE STARTUP",
+    highlight: "1,000+ Active Users"
   },
   {
-    title: "SS Enterprises Telecom Portal",
-    description: "A fully responsive corporate website for a telecom service provider (wesse.in). Developed with a clean UI and seamless experience across devices, integrating dynamic PHP content modules.",
-    tech: ["HTML5", "Tailwind CSS", "JavaScript", "PHP"],
-    github: "https://github.com/Lakshayb057/Project-SS",
-    live: "http://wesse.in"
+    title: "ChatLeads AI",
+    subtitle: "Automated Lead Intelligence & WhatsApp Fleet CRM",
+    category: "ai",
+    categoryLabel: "AI & REAL-TIME",
+    description: "Real-time WhatsApp CRM supporting 50+ concurrent sessions with Baileys SDK and WebSockets. Automates document OCR and structured lead generation using Gemini 2.5 Flash and Llama-4 (Groq API), cutting manual entry by 90%.",
+    tech: ["Next.js", "FastAPI", "Node.js", "PostgreSQL", "Gemini 2.5 Flash", "Groq API", "WebSockets"],
+    github: "https://github.com/Lakshay/ChatLeads-AI",
+    badge: "AI PLATFORM",
+    highlight: "90% Automation in Lead Entry"
   },
   {
-    title: "Core Banking System",
-    description: "A robust, menu-driven banking application using persistent binary file I/O to manage customer accounts and financial transactions. Features real-time balance updates and mini-statement generation.",
-    tech: ["C", "C++", "Binary I/O", "Data Structures"],
-    github: "https://github.com/Lakshayb057/Bank",
-    live: ""
+    title: "Nexus CRM",
+    subtitle: "High-Performance Multi-Tenant CRM Platform",
+    category: "fullstack",
+    categoryLabel: "ENTERPRISE BACKEND",
+    description: "Multi-tenant CRM supporting 4 distinct user roles with dynamic lead management, chunked bulk CSV/Excel imports (1,000 records/batch), real-time Socket.io notifications, Redis low-latency cache, and Brevo SMTP appointment alerts.",
+    tech: ["React.js", "Node.js", "PostgreSQL (JSONB)", "Prisma ORM", "Redis", "Socket.io", "Brevo SMTP"],
+    github: "https://github.com/Lakshay/NexusCRM",
+    badge: "ENTERPRISE",
+    highlight: "100k+ Records Handled"
+  },
+  {
+    title: "FinMantra",
+    subtitle: "Financial Lead Management & Attribution Platform",
+    category: "fullstack",
+    categoryLabel: "FULL-STACK PLATFORM",
+    description: "Financial lead management platform with dynamic admin controls, Meta Conversions API (CAPI) server-side event tracking via GTM, and dual-channel WhatsApp OTP verification with Baileys gateway failover.",
+    tech: ["Next.js", "React", "FastAPI", "Node.js", "PostgreSQL", "Meta CAPI", "GTM", "Gemini API"],
+    github: "https://github.com/Lakshay/FinMantra",
+    badge: "ATTRIBUTION ENGINE",
+    highlight: "100% Attribution Accuracy"
+  },
+  {
+    title: "ABV - SkillPort",
+    subtitle: "Vocational Education & Institute Management",
+    category: "fullstack",
+    categoryLabel: "COMMISSIONED SYSTEM",
+    description: "MERN-based institute portal automating admissions, student records, and priority notices for 500+ students. Implemented JWT certificate verification with unique digital IDs and automated PDF-Parse verification.",
+    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "JWT", "PDF-Parse", "Axios", "RBAC"],
+    github: "https://github.com/Lakshay/SkillPort",
+    badge: "COMMISSIONED",
+    highlight: "₹1.1L Project Revenue"
   }
 ];
 
 const Projects = () => {
-  return (
-    <section id="projects" className="py-24 relative px-6 md:px-12 bg-transparent overflow-hidden" style={{ perspective: 1800 }}>
-      {/* Background Red Ambiance */}
-      <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-red-500/10 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-900/10 rounded-full mix-blend-screen filter blur-[128px] opacity-50"></div>
-      
-      <div className="max-w-7xl mx-auto" style={{ transformStyle: "preserve-3d" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 100, rotateX: -30, z: -200 }}
-          whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="flex items-center justify-between mb-16 px-2"
-        >
-          <div className="flex items-center space-x-4 w-full">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white whitespace-nowrap italic drop-shadow-md">
-              Featured <span className="text-gradient">Projects</span>
-            </h2>
-            <div className="h-px bg-red-500/20 flex-grow" />
-          </div>
-        </motion.div>
+  const [filter, setFilter] = useState('all');
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10" style={{ transformStyle: "preserve-3d" }}>
-          {projects.map((project, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, scale: 0.8, rotateX: -45, rotateY: idx % 2 === 0 ? -20 : 20, z: -300 }}
-              whileInView={{ opacity: 1, scale: 1, rotateX: 0, rotateY: 0, z: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ delay: idx * 0.1, duration: 0.6, type: "spring", bounce: 0.4 }}
-              whileHover={{ 
-                scale: 1.05, 
-                rotateX: Math.random() > 0.5 ? 5 : -5, 
-                rotateY: Math.random() > 0.5 ? 5 : -5, 
-                z: 100,
-                transition: { type: "spring", stiffness: 300 }
-              }}
-              style={{ transformStyle: "preserve-3d" }}
-              className="glass p-8 rounded-2xl border border-red-500/20 hover:border-red-500/50 transition-all group flex flex-col h-full shadow-[0_0_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_50px_rgba(239,68,68,0.4)] cursor-pointer"
-            >
-              <div className="flex justify-between items-center mb-8" style={{ transform: "translateZ(30px)" }}>
-                <Folder className="text-accent group-hover:scale-110 transition-transform" size={40} />
-                <div className="flex space-x-4">
+  const filteredProjects = filter === 'all'
+    ? projectItems
+    : projectItems.filter(p => p.category === filter);
+
+  return (
+    <section id="projects" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
+      {/* Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        <div className="flex items-center gap-4">
+          <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-white tracking-tight flex items-center">
+            <span>Selected Work</span>
+            <span className="text-red-500">.</span>
+          </h2>
+          <div className="hidden sm:block h-px bg-zinc-800/80 w-24" />
+        </div>
+        <p className="text-zinc-400 text-sm sm:text-base max-w-md">
+          A curated collection of impactful projects spanning AI systems, real-time architectures, and mobile applications.
+        </p>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex flex-wrap items-center gap-2 mb-12">
+        {[
+          { key: 'all', label: 'All Projects' },
+          { key: 'fullstack', label: 'Full-Stack & Web' },
+          { key: 'mobile', label: 'Mobile (Android)' },
+          { key: 'ai', label: 'AI & Real-Time' },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setFilter(tab.key)}
+            className={`px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
+              filter === tab.key
+                ? 'bg-red-500 text-white shadow-lg shadow-red-500/25'
+                : 'bg-zinc-900/60 text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Projects Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProjects.map((project, idx) => (
+          <motion.div
+            key={project.title}
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: idx * 0.05 }}
+            whileHover={{ y: -6, scale: 1.02, borderColor: 'rgba(239,68,68,0.4)', boxShadow: '0 0 30px rgba(239,68,68,0.15)' }}
+            className="group bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-7 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between"
+          >
+            <div>
+              {/* Category & Badge Header */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[11px] font-mono tracking-wider text-red-400 font-semibold">
+                  {project.categoryLabel}
+                </span>
+                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-950 border border-zinc-800 text-zinc-400">
+                  {project.highlight}
+                </span>
+              </div>
+
+              {/* Title & Subtitle */}
+              <h3 className="font-display font-extrabold text-2xl text-white group-hover:text-red-400 transition-colors mb-1">
+                {project.title}
+              </h3>
+              <h4 className="text-xs font-semibold text-zinc-400 mb-4">
+                {project.subtitle}
+              </h4>
+
+              {/* Description */}
+              <p className="text-zinc-300 text-sm leading-relaxed mb-6 font-normal">
+                {project.description}
+              </p>
+            </div>
+
+            <div>
+              {/* Tech Tags */}
+              <div className="flex flex-wrap gap-1.5 mb-6 pt-4 border-t border-zinc-800/60">
+                {project.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="px-2.5 py-1 rounded-md bg-zinc-950/80 border border-zinc-800/80 text-[11px] font-mono text-zinc-400"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              {/* Links */}
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex items-center gap-3">
                   {project.github && (
-                    <a href={project.github} className="text-slate-400 hover:text-white transition-colors">
-                      <Github size={24} className="group-hover:scale-125 transition-transform" />
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-zinc-400 hover:text-white transition-colors flex items-center gap-1.5 text-xs font-semibold"
+                    >
+                      <Github size={15} />
+                      <span>Code</span>
                     </a>
                   )}
                   {project.live && (
-                    <a href={project.live} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-accent transition-colors">
-                      <ExternalLink size={24} className="group-hover:scale-125 transition-transform" />
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-1 text-xs font-semibold"
+                    >
+                      <ExternalLink size={15} />
+                      <span>Live Demo</span>
                     </a>
                   )}
                 </div>
+
+                <div className="w-8 h-8 rounded-full bg-zinc-950 border border-zinc-800 group-hover:border-red-500/60 group-hover:bg-red-500 flex items-center justify-center transition-all duration-300">
+                  <ArrowUpRight size={16} className="text-zinc-400 group-hover:text-white transition-colors" />
+                </div>
               </div>
-
-              <h3 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-accent transition-colors drop-shadow-md" style={{ transform: "translateZ(40px)" }}>
-                {project.title}
-              </h3>
-
-              <p className="text-slate-400 text-sm leading-relaxed mb-8 flex-grow" style={{ transform: "translateZ(20px)" }}>
-                {project.description}
-              </p>
-
-              <ul className="flex flex-wrap gap-2 mt-auto" style={{ transform: "translateZ(30px)" }}>
-                {project.tech.map((tech, i) => (
-                  <li key={i} className="text-xs font-mono font-bold text-white bg-red-500/20 group-hover:bg-red-500/40 px-3 py-1 rounded-full shadow-lg transition-colors">
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        className="flex justify-center mt-20 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
-      >
-        <Link to="contact" smooth={true} duration={500}>
-          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
-             <ChevronDown size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+            </div>
           </motion.div>
-        </Link>
-      </motion.div>
+        ))}
+      </div>
     </section>
   );
 };

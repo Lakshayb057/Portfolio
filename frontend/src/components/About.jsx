@@ -1,96 +1,179 @@
+import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
-import { Link } from 'react-scroll';
-import profileImg from '../assets/lakshay.png';
+import { Brain, Layers, Zap, Sparkles, ExternalLink, Award } from 'lucide-react';
+
+const pillars = [
+  {
+    icon: <Brain className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
+    title: "DSA & Problem Solving",
+    description: "Strong algorithmic foundation, data structure optimization, and competitive problem solving.",
+  },
+  {
+    icon: <Layers className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
+    title: "Building Solutions",
+    description: "End-to-end web & software development, from database modeling to live cloud deployment.",
+  },
+  {
+    icon: <Zap className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
+    title: "Full-Stack & Systems",
+    description: "High-performance MERN, Next.js, Django, WebSockets, and distributed microservices.",
+  },
+  {
+    icon: <Sparkles className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
+    title: "UI/UX & Mobile",
+    description: "Pixel-perfect responsive web designs and native Android experiences with Jetpack Compose.",
+  },
+];
+
+const certifications = [
+  {
+    title: "Master Generative AI & Generative AI Tools (ChatGPT & More)",
+    issuer: "UDEMY",
+    date: "Aug' 25",
+    link: "https://drive.google.com/file/d/13ICN96ZAK89KfZ0hqRjB5JDUD7pyMYii/view",
+  },
+  {
+    title: "Computational Theory: Language Principle & Finite Automata Theory",
+    issuer: "INFOSYS SPRINGBOARD",
+    date: "Aug' 25",
+    link: "https://drive.google.com/file/d/1GmTwsMLuO1qyONl0Cpde-RSfh_eqVY52/view",
+  },
+  {
+    title: "Aptech Certified Professional in C/C++ Programming",
+    issuer: "APTECH INSTITUTE",
+    date: "Jun' 24",
+    link: "https://drive.google.com/file/d/15wR62pFMsR2PemgpHpYtKPoQG7daXL9B/view?usp=sharing",
+  },
+  {
+    title: "JAVA PROGRAMMING - Lovely Professional University",
+    issuer: "IAMNEO PLATFORM",
+    date: "May' 24",
+    link: "https://drive.google.com/file/d/1Mo2j4_YcuKombnqfDaurv0XnEh61DCGd/view?usp=sharing",
+  },
+  {
+    title: "Responsive Web Design Certification",
+    issuer: "FREECODECAMP",
+    date: "Sep' 23",
+    link: "https://drive.google.com/file/d/1RanN4_5XwtZ5cBAGdPJhQc8t9vPGDyVV/view?usp=sharing",
+  },
+];
 
 const About = () => {
   return (
-    <section id="about" className="py-24 relative px-6 md:px-12" style={{ perspective: 1200 }}>
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 md:gap-20">
-        
-        {/* About Text */}
-        <motion.div 
-          initial={{ opacity: 0, x: -100, rotateY: 30, z: -200 }}
-          whileInView={{ opacity: 1, x: 0, rotateY: 0, z: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="lg:w-1/2"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          <div className="flex items-center space-x-4 mb-6">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white drop-shadow-md">About Me</h2>
-            <div className="h-px bg-red-500/20 flex-grow" />
-          </div>
-          
-          <p className="text-lg text-slate-400 leading-relaxed mb-6" style={{ transform: "translateZ(30px)" }}>
-            Hi, I'm <span className="text-accent font-bold drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]">Lakshay</span>, a B.Tech Computer Science student at Lovely Professional University, specializing in Full-Stack Development.
-          </p>
-          <p className="text-lg text-slate-400 leading-relaxed mb-8" style={{ transform: "translateZ(20px)" }}>
-            I focus on building scalable web applications and have a solid foundation in both front-end and back-end development. I am committed to continuously improving my skills in emerging technologies, combining clean aesthetics with robust, production-ready architecture.
-          </p>
-          
-          <div className="grid grid-cols-2 gap-6" style={{ transformStyle: "preserve-3d" }}>
-            <motion.div 
-              whileHover={{ scale: 1.1, rotateX: 10, rotateY: -10, z: 50 }}
-              className="glass p-4 rounded-xl border border-red-500/10 shadow-lg shadow-black/20"
-            >
-              <h3 className="text-accent font-bold mb-1">Education</h3>
-              <p className="text-slate-300 text-sm">B.Tech CSE @ LPU<br/>(2023 - Present)</p>
-            </motion.div>
-            <motion.div 
-              whileHover={{ scale: 1.1, rotateX: 10, rotateY: 10, z: 50 }}
-              className="glass p-4 rounded-xl border border-red-500/10 shadow-lg shadow-black/20"
-            >
-              <h3 className="text-highlight font-bold mb-1">Location</h3>
-              <p className="text-slate-300 text-sm">Punjab, India<br/>(Remote/On-site)</p>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Profile Image View */}
-        <motion.div 
-          initial={{ opacity: 0, x: 100, rotateY: -30, z: -200 }}
-          whileInView={{ opacity: 1, x: 0, rotateY: 0, z: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="lg:w-1/2 flex justify-center lg:justify-end"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-            <motion.div 
-              whileHover={{ scale: 1.05, rotateY: -15, rotateX: 5, z: 100 }}
-              className="relative w-full max-w-sm aspect-[4/5] md:aspect-[3/4] rounded-2xl overflow-hidden glass border border-red-500/40 group shadow-[0_0_50px_rgba(239,68,68,0.3)] transition-all duration-300"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-transparent z-10 pointer-events-none"/>
-              <img 
-                src={profileImg} 
-                alt="Lakshay" 
-                className="w-full h-full object-cover object-top grayscale-0 lg:grayscale lg:group-hover:grayscale-0 transition-all duration-700 ease-in-out transform group-hover:scale-110"
-              />
-              <motion.div 
-                className="absolute bottom-4 right-4 z-20"
-                whileHover={{ scale: 1.1, z: 50 }}
-              >
-                 <p className="text-xs font-mono text-white/50 tracking-widest bg-black/60 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/40 group-hover:border-accent group-hover:text-accent shadow-lg shadow-red-500/20 transition-all">
-                   {"< FULL STACK DEV />"}
-                 </p>
-              </motion.div>
-            </motion.div>
-           
-           <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-700/50 to-transparent block -z-10" />
-        </motion.div>
-
+    <section id="about" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
+      {/* Section Header */}
+      <div className="flex items-center gap-4 mb-14">
+        <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-white tracking-tight flex items-center">
+          <span>About Me</span>
+          <span className="text-red-500">.</span>
+        </h2>
+        <div className="h-px bg-zinc-800/80 flex-grow max-w-xs" />
       </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
+      {/* Bento Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
+        {/* Main Bio Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="lg:col-span-7 bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-8 sm:p-10 backdrop-blur-xl flex flex-col justify-between"
+        >
+          <div>
+            <h3 className="font-display font-bold text-2xl sm:text-3xl text-white mb-6">
+              Hello, I'm Lakshay.
+            </h3>
+            <p className="text-zinc-300 text-base sm:text-lg leading-relaxed mb-6 font-normal">
+              My journey in development started with curiosity about how software works behind the scenes.
+            </p>
+            <p className="text-zinc-400 text-base sm:text-lg leading-relaxed font-normal">
+              Today, that curiosity has evolved into building <strong className="text-white font-semibold">full-stack applications</strong>, <strong className="text-red-500 font-semibold">AI-driven tools</strong>, and <strong className="text-white font-semibold">real-world products</strong>. I enjoy turning complex ideas into scalable digital solutions using modern technologies.
+            </p>
+          </div>
+
+          <div className="pt-8 mt-8 border-t border-zinc-800/60 grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div>
+              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Education</span>
+              <span className="text-sm font-semibold text-zinc-200">LPU & Aptech Learning</span>
+              <span className="block text-xs text-zinc-400">B.Tech CSE • ACP Certified</span>
+            </div>
+            <div>
+              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Focus</span>
+              <span className="text-sm font-semibold text-zinc-200">Full-Stack & Systems</span>
+              <span className="block text-xs text-red-500">Production Apps</span>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Location</span>
+              <span className="text-sm font-semibold text-zinc-200">Gurugram / Punjab</span>
+              <span className="block text-xs text-zinc-400">India</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 4 Pillars Grid with 3D hover response */}
+        <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {pillars.map((pillar, i) => (
+            <motion.div
+              key={pillar.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ y: -6, scale: 1.02, borderColor: 'rgba(239,68,68,0.4)', boxShadow: '0 0 25px rgba(239,68,68,0.15)' }}
+              className="group bg-zinc-900/35 border border-zinc-800/70 rounded-2xl p-6 backdrop-blur-md transition-all duration-300 flex flex-col justify-between"
+            >
+              <div className="mb-4">{pillar.icon}</div>
+              <div>
+                <h4 className="font-display font-bold text-white text-base mb-1.5 group-hover:text-red-400 transition-colors">
+                  {pillar.title}
+                </h4>
+                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+                  {pillar.description}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Certifications Row */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        className="flex justify-center mt-12 animate-bounce cursor-pointer text-slate-500 hover:text-red-400 transition-colors"
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="bg-zinc-950/40 border border-zinc-900 rounded-3xl p-6 sm:p-8 backdrop-blur-sm"
       >
-        <Link to="skills" smooth={true} duration={500}>
-          <motion.div whileHover={{ scale: 1.3, rotateZ: 180 }}>
-            <ChevronDown size={40} className="drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-          </motion.div>
-        </Link>
+        <div className="flex items-center gap-3 mb-6">
+          <Award size={18} className="text-red-500" />
+          <h4 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.2em] font-semibold">
+            Certifications & Verified Credentials
+          </h4>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {certifications.map((cert) => (
+            <a
+              key={cert.title}
+              href={cert.link}
+              target="_blank"
+              rel="noreferrer"
+              className="group bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800/80 hover:border-red-500/40 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between gap-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="text-zinc-200 group-hover:text-white font-medium text-xs sm:text-[13px] leading-snug line-clamp-2">
+                  {cert.title}
+                </span>
+                <ExternalLink size={14} className="text-zinc-500 group-hover:text-red-500 flex-shrink-0 transition-colors mt-0.5" />
+              </div>
+              <div className="flex items-center justify-between text-[11px] text-zinc-500 font-mono pt-1 border-t border-zinc-800/40">
+                <span>{cert.issuer}</span>
+                <span className="text-red-400/90">{cert.date}</span>
+              </div>
+            </a>
+          ))}
+        </div>
       </motion.div>
     </section>
   );
