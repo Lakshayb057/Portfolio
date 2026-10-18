@@ -39,7 +39,7 @@ const techLogos = [
   { icon: 'devicon-css3-plain', label: 'CSS3', top: '24%', left: '89%', size: 'text-5xl sm:text-6xl', duration: 8.2, delay: 1.8 },
   { icon: 'devicon-git-plain', label: 'Git', top: '35%', left: '72%', size: 'text-4xl sm:text-5xl', duration: 7.0, delay: 0.4 },
   { icon: 'devicon-github-original', label: 'GitHub', top: '44%', left: '88%', size: 'text-4xl sm:text-5xl', duration: 8.0, delay: 2.0 },
-  { icon: 'devicon-android-plain', label: 'Android', top: '53%', left: '68%', size: 'text-4xl sm:text-5xl', duration: 8.8, delay: 0.6 },
+  { icon: 'devicon-netlify-plain', label: 'Netlify', top: '53%', left: '68%', size: 'text-4xl sm:text-5xl', duration: 8.8, delay: 0.6 },
   { icon: 'devicon-vscode-plain', label: 'VS Code', top: '63%', left: '83%', size: 'text-4xl sm:text-5xl', duration: 7.5, delay: 1.2 },
   { icon: 'devicon-postman-plain', label: 'Postman', top: '72%', left: '67%', size: 'text-4xl sm:text-5xl', duration: 8.3, delay: 2.3 },
   { icon: 'devicon-firebase-plain', label: 'Firebase', top: '81%', left: '91%', size: 'text-4xl sm:text-5xl', duration: 7.6, delay: 1.6 },

@@ -43,9 +43,9 @@ const Internships = () => {
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-14">
         <div className="flex items-center gap-4">
-          <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-white tracking-tight flex items-center">
-            <span>Internships</span>
-            <span className="text-red-500">.</span>
+          <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
+            <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">INTERNSHIPS</span>
+            <span className="text-red-500 font-sans ml-1 text-2xl sm:text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
           </h2>
           <div className="hidden sm:block h-px bg-zinc-800/80 w-24" />
         </div>

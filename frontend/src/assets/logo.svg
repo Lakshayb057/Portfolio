@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141416" />
+      <stop offset="100%" stop-color="#08080a" />
+    </linearGradient>
+  </defs>
+
+  <!-- Sleek rounded squircle background tile -->
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#bgGrad)" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2" />
+
+  <!-- Monoton Letter L Logo - Exact outline extracted from Google Monoton font -->
+  <g transform="translate(28.5, -4.5) scale(1.15)">
+    <!-- Vertical stripe 1 -->
+    <rect x="4.54" y="19.14" width="3.52" height="80.86" fill="#FFFFFF" />
+    <!-- Vertical stripe 2 -->
+    <rect x="11.57" y="19.14" width="3.52" height="80.86" fill="#FFFFFF" />
+    <!-- Vertical stripe 3 -->
+    <rect x="18.60" y="19.14" width="3.52" height="80.86" fill="#FFFFFF" />
+    <!-- Vertical stripe 4 + horizontal foot -->
+    <path fill="#FFFFFF" d="M25.63 100L25.63 19.14L29.15 19.14L29.15 82.42L57.28 82.42L57.28 85.94L29.15 85.94L29.15 89.45L57.28 89.45L57.28 92.97L29.15 92.97L29.15 96.48L57.28 96.48L57.28 100L25.63 100Z" />
+  </g>
+</svg>

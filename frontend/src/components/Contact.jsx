@@ -45,9 +45,9 @@ const Contact = () => {
     <section id="contact" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto">
       {/* Section Title matching Parth's Let's build something great. */}
       <div className="mb-14">
-        <h2 className="font-display font-extrabold text-5xl sm:text-6xl lg:text-7xl text-white tracking-tight leading-none mb-4 flex items-center">
-          <span>Let's build something great</span>
-          <span className="text-red-500">.</span>
+        <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-none mb-4 flex items-baseline">
+          <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">GET IN TOUCH</span>
+          <span className="text-red-500 font-sans ml-1 text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
         </h2>
         <p className="text-zinc-400 text-base sm:text-lg max-w-2xl font-normal">
           Open for full-time roles, software engineering collaborations, and high-impact full-stack opportunities.

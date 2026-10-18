@@ -6,7 +6,7 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
   body {
     @apply bg-primary text-zinc-300 antialiased overflow-x-hidden selection:bg-red-500 selection:text-white;

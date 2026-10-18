@@ -1,182 +1,400 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Layers, Zap, Sparkles, ExternalLink, Award } from 'lucide-react';
 
-const pillars = [
-  {
-    icon: <Brain className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
-    title: "DSA & Problem Solving",
-    description: "Strong algorithmic foundation, data structure optimization, and competitive problem solving.",
-  },
-  {
-    icon: <Layers className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
-    title: "Building Solutions",
-    description: "End-to-end web & software development, from database modeling to live cloud deployment.",
-  },
-  {
-    icon: <Zap className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
-    title: "Full-Stack & Systems",
-    description: "High-performance MERN, Next.js, Django, WebSockets, and distributed microservices.",
-  },
-  {
-    icon: <Sparkles className="text-zinc-400 group-hover:text-red-500 transition-colors" size={28} />,
-    title: "UI/UX & Mobile",
-    description: "Pixel-perfect responsive web designs and native Android experiences with Jetpack Compose.",
-  },
-];
+// Reusable Bento Icon Component:
+// Red & Black monochrome in default state -> Vibrant 3D Emoji on container hover
+const BentoIcon = ({ redBlackContent, emojiChar, glowColor = 'rgba(239, 68, 68, 0.4)' }) => (
+  <div className="relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-start select-none">
+    {/* Default: Red and Black only */}
+    <div className="absolute inset-0 flex items-center justify-start transition-all duration-300 ease-out opacity-100 scale-100 group-hover:opacity-0 group-hover:scale-75 group-hover:pointer-events-none">
+      {redBlackContent}
+    </div>
 
-const certifications = [
-  {
-    title: "Master Generative AI & Generative AI Tools (ChatGPT & More)",
-    issuer: "UDEMY",
-    date: "Aug' 25",
-    link: "https://drive.google.com/file/d/13ICN96ZAK89KfZ0hqRjB5JDUD7pyMYii/view",
-  },
-  {
-    title: "Computational Theory: Language Principle & Finite Automata Theory",
-    issuer: "INFOSYS SPRINGBOARD",
-    date: "Aug' 25",
-    link: "https://drive.google.com/file/d/1GmTwsMLuO1qyONl0Cpde-RSfh_eqVY52/view",
-  },
-  {
-    title: "Aptech Certified Professional in C/C++ Programming",
-    issuer: "APTECH INSTITUTE",
-    date: "Jun' 24",
-    link: "https://drive.google.com/file/d/15wR62pFMsR2PemgpHpYtKPoQG7daXL9B/view?usp=sharing",
-  },
-  {
-    title: "JAVA PROGRAMMING - Lovely Professional University",
-    issuer: "IAMNEO PLATFORM",
-    date: "May' 24",
-    link: "https://drive.google.com/file/d/1Mo2j4_YcuKombnqfDaurv0XnEh61DCGd/view?usp=sharing",
-  },
-  {
-    title: "Responsive Web Design Certification",
-    issuer: "FREECODECAMP",
-    date: "Sep' 23",
-    link: "https://drive.google.com/file/d/1RanN4_5XwtZ5cBAGdPJhQc8t9vPGDyVV/view?usp=sharing",
-  },
-];
+    {/* Hover: Vibrant Emoji appearance */}
+    <div
+      className="absolute inset-0 flex items-center justify-start transition-all duration-300 ease-out opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-110"
+      style={{ filter: `drop-shadow(0 8px 16px ${glowColor})` }}
+    >
+      <span className="text-3xl sm:text-4xl leading-none select-none font-['Apple_Color_Emoji','Segoe_UI_Emoji','Noto_Color_Emoji']">
+        {emojiChar}
+      </span>
+    </div>
+  </div>
+);
+
+// 1. DSA - Brain (Red & Black default, 🧠 emoji on hover)
+const DsaIcon = () => (
+  <BentoIcon
+    emojiChar="🧠"
+    glowColor="rgba(244, 114, 182, 0.45)"
+    redBlackContent={
+      <svg
+        viewBox="0 0 64 64"
+        className="w-full h-full drop-shadow-[0_4px_12px_rgba(239,68,68,0.25)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M32 14C24 14 18 19 16 26C14 31 15 36 17 40C15 44 18 49 23 51C26 52 29 53 32 53C35 53 38 52 41 51C46 49 49 44 47 40C49 36 50 31 48 26C46 19 40 14 32 14Z"
+          fill="#141416"
+          stroke="#ef4444"
+          strokeWidth="2.5"
+        />
+        <path
+          d="M25 21C28 23 30 27 28 32C26 36 21 38 22 43C23 47 28 48 32 48C36 48 41 47 42 43C43 38 38 36 36 32C34 27 36 23 39 21"
+          stroke="#ef4444"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M32 16V49" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        <path d="M19 28C22 28 24 31 23 35" stroke="#ef4444" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M45 28C42 28 40 31 41 35" stroke="#ef4444" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M20 41C24 41 26 44 25 48" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" />
+        <path d="M44 41C40 41 38 44 39 48" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" />
+      </svg>
+    }
+  />
+);
+
+// 2. Building Solutions - Crane (Red & Black default, 🏗️ emoji on hover)
+const BuildingSolutionsIcon = () => (
+  <BentoIcon
+    emojiChar="🏗️"
+    glowColor="rgba(245, 158, 11, 0.45)"
+    redBlackContent={
+      <svg
+        viewBox="0 0 64 64"
+        className="w-full h-full drop-shadow-[0_4px_12px_rgba(239,68,68,0.25)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Base Platform */}
+        <rect x="12" y="52" width="28" height="4" rx="2" fill="#ef4444" />
+
+        {/* Vertical Tower Mast */}
+        <rect x="18" y="18" width="8" height="34" fill="#141416" stroke="#ef4444" strokeWidth="1.5" rx="1" />
+        <path d="M19 22L25 28M25 22L19 28" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M19 30L25 36M25 30L19 36" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M19 38L25 44M25 38L19 44" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M19 46L25 52M25 46L19 52" stroke="#ef4444" strokeWidth="1.5" strokeLinecap="round" />
+
+        {/* Top Jib Apex & Cables */}
+        <polygon points="22,10 26,18 18,18" fill="#ef4444" />
+        <line x1="22" y1="10" x2="52" y2="18" stroke="#dc2626" strokeWidth="1.2" />
+        <line x1="22" y1="10" x2="14" y2="18" stroke="#dc2626" strokeWidth="1.2" />
+
+        {/* Horizontal Jib / Boom */}
+        <rect x="14" y="16" width="38" height="4" rx="1.5" fill="#ef4444" />
+        <rect x="13" y="16" width="5" height="6" rx="1" fill="#09090b" stroke="#ef4444" strokeWidth="1" />
+
+        {/* Trolley, Cable & Hook */}
+        <rect x="36" y="19" width="6" height="3" rx="1" fill="#ef4444" />
+        <line x1="39" y1="22" x2="39" y2="29" stroke="#ef4444" strokeWidth="1.5" />
+        <path d="M39 29 C39 32 36 32 36 30" stroke="#ef4444" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+
+        {/* Slings & Suspended Beam */}
+        <line x1="39" y1="30" x2="31" y2="36" stroke="#dc2626" strokeWidth="1.2" />
+        <line x1="39" y1="30" x2="47" y2="36" stroke="#dc2626" strokeWidth="1.2" />
+        <rect x="29" y="36" width="20" height="9" rx="1.5" fill="#141416" stroke="#ef4444" strokeWidth="1.6" />
+      </svg>
+    }
+  />
+);
+
+// 3. Full-Stack - Lightning (Red & Black default, ⚡ emoji on hover)
+const FullStackIcon = () => (
+  <BentoIcon
+    emojiChar="⚡"
+    glowColor="rgba(250, 204, 21, 0.45)"
+    redBlackContent={
+      <svg
+        viewBox="0 0 64 64"
+        className="w-full h-full drop-shadow-[0_4px_14px_rgba(239,68,68,0.35)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M37 9L21 33H33L27 55L45 29H33L37 9Z"
+          fill="#ef4444"
+          stroke="#7f1d1d"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M35 12L24 31H33L30 46L41 29H33L35 12Z"
+          fill="#b91c1c"
+          opacity="0.3"
+        />
+      </svg>
+    }
+  />
+);
+
+// 4. UI/UX - Sparkles / Stars (Red & Black default, ✨ emoji on hover)
+const UiUxIcon = () => (
+  <BentoIcon
+    emojiChar="✨"
+    glowColor="rgba(255, 255, 255, 0.45)"
+    redBlackContent={
+      <svg
+        viewBox="0 0 64 64"
+        className="w-full h-full drop-shadow-[0_4px_14px_rgba(239,68,68,0.35)]"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Primary 4-Point Star in Red */}
+        <path
+          d="M38 12C38 21 44 26 52 26C44 26 38 31 38 40C38 31 32 26 24 26C32 26 38 21 38 12Z"
+          fill="#ef4444"
+          stroke="#7f1d1d"
+          strokeWidth="1.2"
+        />
+        {/* Companion Star */}
+        <path
+          d="M22 34C22 39 25 42 29 42C25 42 22 45 22 50C22 45 19 42 15 42C19 42 22 39 22 34Z"
+          fill="#dc2626"
+          opacity="0.85"
+        />
+      </svg>
+    }
+  />
+);
 
 const About = () => {
   return (
-    <section id="about" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
-      {/* Section Header */}
-      <div className="flex items-center gap-4 mb-14">
-        <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-white tracking-tight flex items-center">
-          <span>About Me</span>
-          <span className="text-red-500">.</span>
-        </h2>
-        <div className="h-px bg-zinc-800/80 flex-grow max-w-xs" />
-      </div>
+    <section
+      id="about"
+      className="min-h-screen py-20 lg:py-28 px-6 md:px-12 relative max-w-7xl mx-auto flex flex-col justify-center scroll-mt-20"
+      style={{ perspective: 1400 }}
+    >
+      <div style={{ transformStyle: "preserve-3d" }}>
 
-      {/* Bento Grid Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-16">
-        {/* Main Bio Card */}
+        {/* Section Header with 3D Depth Entrance */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="lg:col-span-7 bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-8 sm:p-10 backdrop-blur-xl flex flex-col justify-between"
+          initial={{ opacity: 0, y: -30, rotateX: -20, z: -80 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+          viewport={{ once: false, amount: 0.15 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100, damping: 20 }}
+          style={{ transformStyle: "preserve-3d" }}
+          className="flex items-center gap-4 mb-14"
         >
-          <div>
-            <h3 className="font-display font-bold text-2xl sm:text-3xl text-white mb-6">
-              Hello, I'm Lakshay.
-            </h3>
-            <p className="text-zinc-300 text-base sm:text-lg leading-relaxed mb-6 font-normal">
-              My journey in development started with curiosity about how software works behind the scenes.
-            </p>
-            <p className="text-zinc-400 text-base sm:text-lg leading-relaxed font-normal">
-              Today, that curiosity has evolved into building <strong className="text-white font-semibold">full-stack applications</strong>, <strong className="text-red-500 font-semibold">AI-driven tools</strong>, and <strong className="text-white font-semibold">real-world products</strong>. I enjoy turning complex ideas into scalable digital solutions using modern technologies.
-            </p>
-          </div>
-
-          <div className="pt-8 mt-8 border-t border-zinc-800/60 grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div>
-              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Education</span>
-              <span className="text-sm font-semibold text-zinc-200">LPU & Aptech Learning</span>
-              <span className="block text-xs text-zinc-400">B.Tech CSE • ACP Certified</span>
-            </div>
-            <div>
-              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Focus</span>
-              <span className="text-sm font-semibold text-zinc-200">Full-Stack & Systems</span>
-              <span className="block text-xs text-red-500">Production Apps</span>
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <span className="block text-xs font-mono text-zinc-500 uppercase tracking-wider">Location</span>
-              <span className="text-sm font-semibold text-zinc-200">Gurugram / Punjab</span>
-              <span className="block text-xs text-zinc-400">India</span>
-            </div>
-          </div>
+          <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
+            <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">ABOUT ME</span>
+            <span className="text-red-500 font-sans ml-1 text-2xl sm:text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
+          </h2>
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="h-px bg-zinc-800/80 flex-grow max-w-xs origin-left"
+          />
         </motion.div>
 
-        {/* 4 Pillars Grid with 3D hover response */}
-        <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {pillars.map((pillar, i) => (
-            <motion.div
-              key={pillar.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -6, scale: 1.02, borderColor: 'rgba(239,68,68,0.4)', boxShadow: '0 0 25px rgba(239,68,68,0.15)' }}
-              className="group bg-zinc-900/35 border border-zinc-800/70 rounded-2xl p-6 backdrop-blur-md transition-all duration-300 flex flex-col justify-between"
-            >
-              <div className="mb-4">{pillar.icon}</div>
-              <div>
-                <h4 className="font-display font-bold text-white text-base mb-1.5 group-hover:text-red-400 transition-colors">
-                  {pillar.title}
-                </h4>
-                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
-                  {pillar.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        {/* =========================================================================
+            BENTO GRID WITH 3D SPATIAL ENTRANCE & HOLOGRAPHIC DEPTH
+            ========================================================================= */}
+
+        {/* ROW 1: Wide Bio Card (3D Left Yaw Tilt) + DSA Card (3D Right Yaw Tilt) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 mb-4 sm:mb-5" style={{ transformStyle: "preserve-3d" }}>
+
+          {/* Main Bio Card - 3D Perspective Slide & Spatial Depth */}
+          <motion.div
+            initial={{ opacity: 0, x: -70, rotateY: 12, rotateX: -6, z: -120, scale: 0.94 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0, rotateX: 0, z: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.9, type: "spring", bounce: 0.22 }}
+            whileHover={{
+              y: -6,
+              rotateX: 2,
+              rotateY: -2,
+              z: 25,
+              borderColor: 'rgba(239, 68, 68, 0.35)',
+              transition: { type: "spring", stiffness: 350, damping: 22 }
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="lg:col-span-8 bg-[#121214] border border-white/[0.08] rounded-[28px] sm:rounded-[32px] p-8 sm:p-10 lg:p-12 transition-colors duration-300 flex flex-col justify-center relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.7)] cursor-default"
+          >
+            {/* Subtle Glass Top Rim Highlight */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent pointer-events-none" />
+
+            {/* Subtle Inside Ambient Red Glow */}
+            <div className="absolute -top-12 -right-12 w-64 h-64 sm:w-80 sm:h-80 bg-red-500/[0.06] rounded-full blur-[65px] pointer-events-none group-hover:bg-red-500/[0.12] transition-all duration-700 ease-out" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(239,68,68,0.05)_0%,transparent_60%)] pointer-events-none" />
+
+            {/* Content with 3D Pop */}
+            <div className="relative z-10" style={{ transform: "translateZ(20px)" }}>
+              <motion.h3
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="font-display font-bold text-3xl sm:text-4xl lg:text-[2.65rem] text-white tracking-tight leading-tight"
+              >
+                Hello, I'm Lakshay.
+              </motion.h3>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-zinc-400 text-base sm:text-lg leading-relaxed mt-6 font-normal"
+              >
+                My journey in development started with curiosity about how software works behind the scenes.
+              </motion.p>
+
+              <motion.p
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="text-zinc-400 text-base sm:text-lg leading-relaxed mt-5 sm:mt-6 font-normal"
+              >
+                Today, that curiosity has evolved into building <strong className="text-white font-semibold">full-stack applications</strong>, <span className="text-red-500 font-semibold">AI-driven tools</span>, and <strong className="text-white font-semibold">real-world products</strong>. I enjoy turning complex ideas into scalable digital solutions using modern technologies.
+              </motion.p>
+            </div>
+          </motion.div>
+
+          {/* DSA Card - 3D Opposing Tilt & Slide */}
+          <motion.div
+            initial={{ opacity: 0, x: 70, rotateY: -12, rotateX: -6, z: -120, scale: 0.94 }}
+            whileInView={{ opacity: 1, x: 0, rotateY: 0, rotateX: 0, z: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.9, delay: 0.15, type: "spring", bounce: 0.22 }}
+            whileHover={{
+              y: -6,
+              rotateX: 3,
+              rotateY: 3,
+              z: 25,
+              borderColor: 'rgba(239, 68, 68, 0.45)',
+              transition: { type: "spring", stiffness: 350, damping: 22 }
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="lg:col-span-4 bg-[#121214] border border-white/[0.08] hover:border-red-500/40 rounded-[28px] sm:rounded-[32px] p-8 sm:p-10 transition-colors duration-300 flex flex-col justify-center relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.7)] min-h-[280px] lg:min-h-full cursor-pointer"
+          >
+            <div className="absolute top-0 right-0 w-60 h-60 bg-red-500/[0.03] group-hover:bg-pink-500/[0.08] rounded-full blur-3xl pointer-events-none transition-colors duration-300" />
+
+            <div className="mb-6 sm:mb-8" style={{ transform: "translateZ(30px)" }}>
+              <DsaIcon />
+            </div>
+
+            <div style={{ transform: "translateZ(20px)" }}>
+              <h4 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 sm:mb-3 group-hover:text-red-400 transition-colors">
+                DSA
+              </h4>
+              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                Problem solving and algorithmic thinking.
+              </p>
+            </div>
+          </motion.div>
         </div>
+
+        {/* ROW 2: 3 Cards (3D Upward Flip with Stagger) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5" style={{ transformStyle: "preserve-3d" }}>
+
+          {/* Card 1: Building Solutions */}
+          <motion.div
+            initial={{ opacity: 0, y: 70, rotateX: 20, rotateY: 6, z: -100 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 0, rotateY: 0, z: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, delay: 0.2, type: "spring", bounce: 0.22 }}
+            whileHover={{
+              y: -6,
+              rotateX: 3,
+              z: 25,
+              borderColor: 'rgba(239, 68, 68, 0.45)',
+              transition: { type: "spring", stiffness: 350, damping: 22 }
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="bg-[#121214] border border-white/[0.08] hover:border-red-500/40 rounded-[28px] sm:rounded-[32px] p-8 sm:p-10 transition-colors duration-300 flex flex-col justify-between relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.7)] min-h-[240px] cursor-pointer"
+          >
+            <div className="absolute top-0 right-0 w-52 h-52 bg-red-500/[0.03] group-hover:bg-amber-500/[0.08] rounded-full blur-3xl pointer-events-none transition-colors duration-300" />
+
+            <div className="mb-6 sm:mb-8" style={{ transform: "translateZ(30px)" }}>
+              <BuildingSolutionsIcon />
+            </div>
+
+            <div style={{ transform: "translateZ(20px)" }}>
+              <h4 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 sm:mb-3 group-hover:text-red-400 transition-colors">
+                Building Solutions
+              </h4>
+              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                End-to-end web & software development.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 2: Full-Stack */}
+          <motion.div
+            initial={{ opacity: 0, y: 80, rotateX: 20, z: -100 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, delay: 0.3, type: "spring", bounce: 0.22 }}
+            whileHover={{
+              y: -6,
+              rotateX: 3,
+              z: 25,
+              borderColor: 'rgba(239, 68, 68, 0.45)',
+              transition: { type: "spring", stiffness: 350, damping: 22 }
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="bg-[#121214] border border-white/[0.08] hover:border-red-500/40 rounded-[28px] sm:rounded-[32px] p-8 sm:p-10 transition-colors duration-300 flex flex-col justify-between relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.7)] min-h-[240px] cursor-pointer"
+          >
+            <div className="absolute top-0 right-0 w-52 h-52 bg-red-500/[0.03] group-hover:bg-yellow-500/[0.08] rounded-full blur-3xl pointer-events-none transition-colors duration-300" />
+
+            <div className="mb-6 sm:mb-8" style={{ transform: "translateZ(30px)" }}>
+              <FullStackIcon />
+            </div>
+
+            <div style={{ transform: "translateZ(20px)" }}>
+              <h4 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 sm:mb-3 group-hover:text-red-400 transition-colors">
+                Full-Stack
+              </h4>
+              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                Modern MERN and Django architectures.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 3: UI/UX */}
+          <motion.div
+            initial={{ opacity: 0, y: 70, rotateX: 20, rotateY: -6, z: -100 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 0, rotateY: 0, z: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, delay: 0.4, type: "spring", bounce: 0.22 }}
+            whileHover={{
+              y: -6,
+              rotateX: 3,
+              z: 25,
+              borderColor: 'rgba(239, 68, 68, 0.45)',
+              transition: { type: "spring", stiffness: 350, damping: 22 }
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+            className="bg-[#121214] border border-white/[0.08] hover:border-red-500/40 rounded-[28px] sm:rounded-[32px] p-8 sm:p-10 transition-colors duration-300 flex flex-col justify-between relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.7)] min-h-[240px] cursor-pointer"
+          >
+            <div className="absolute top-0 right-0 w-52 h-52 bg-red-500/[0.03] group-hover:bg-white/[0.08] rounded-full blur-3xl pointer-events-none transition-colors duration-300" />
+
+            <div className="mb-6 sm:mb-8" style={{ transform: "translateZ(30px)" }}>
+              <UiUxIcon />
+            </div>
+
+            <div style={{ transform: "translateZ(20px)" }}>
+              <h4 className="font-display font-bold text-xl sm:text-2xl text-white mb-2 sm:mb-3 group-hover:text-red-400 transition-colors">
+                UI/UX
+              </h4>
+              <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+                Creating user-centric and responsive designs.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+
       </div>
-
-      {/* Certifications Row */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="bg-zinc-950/40 border border-zinc-900 rounded-3xl p-6 sm:p-8 backdrop-blur-sm"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <Award size={18} className="text-red-500" />
-          <h4 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.2em] font-semibold">
-            Certifications & Verified Credentials
-          </h4>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {certifications.map((cert) => (
-            <a
-              key={cert.title}
-              href={cert.link}
-              target="_blank"
-              rel="noreferrer"
-              className="group bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800/80 hover:border-red-500/40 rounded-xl p-4 transition-all duration-200 flex flex-col justify-between gap-2"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-zinc-200 group-hover:text-white font-medium text-xs sm:text-[13px] leading-snug line-clamp-2">
-                  {cert.title}
-                </span>
-                <ExternalLink size={14} className="text-zinc-500 group-hover:text-red-500 flex-shrink-0 transition-colors mt-0.5" />
-              </div>
-              <div className="flex items-center justify-between text-[11px] text-zinc-500 font-mono pt-1 border-t border-zinc-800/40">
-                <span>{cert.issuer}</span>
-                <span className="text-red-400/90">{cert.date}</span>
-              </div>
-            </a>
-          ))}
-        </div>
-      </motion.div>
     </section>
   );
 };
 
 export default About;
+
