@@ -276,7 +276,7 @@ const Contact = () => {
           {/* Location pill */}
           <div className="bg-zinc-950/60 border border-zinc-800/60 rounded-2xl p-5 flex items-center gap-3 text-xs text-zinc-400">
             <MapPin size={16} className="text-red-400 shrink-0" />
-            <span>Based in Gurugram / Punjab, India • Available worldwide for remote engineering</span>
+            <span>Fatehabad, Haryana, India 125050 • Available worldwide for remote engineering</span>
           </div>
         </div>
 
@@ -286,12 +286,9 @@ const Contact = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {/* 1. Name Input with First & Last Name validation */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
-                    Full Name
-                  </label>
-                  <span className="text-[10px] font-mono text-zinc-500">First & Last Name</span>
-                </div>
+                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   placeholder="John Doe"
@@ -316,12 +313,9 @@ const Contact = () => {
 
               {/* 2. Email Input with Proper Format validation */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
-                    Email Address
-                  </label>
-                  <span className="text-[10px] font-mono text-zinc-500">Valid Email</span>
-                </div>
+                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   placeholder="john@example.com"
@@ -352,15 +346,11 @@ const Contact = () => {
                   Message
                 </label>
                 <div className="flex items-center gap-1.5 text-[11px] font-mono">
-                  <span className={isMessageValid ? 'text-emerald-400 font-semibold' : 'text-zinc-400'}>
-                    {messageLength} / {MIN_MESSAGE_CHARACTERS} chars
+                  <span className={isMessageValid ? 'text-emerald-400 font-semibold' : 'text-zinc-500'}>
+                    {messageLength} / {MIN_MESSAGE_CHARACTERS}
                   </span>
-                  {isMessageValid ? (
+                  {isMessageValid && (
                     <CheckCircle size={13} className="text-emerald-400" />
-                  ) : (
-                    <span className="text-red-400 text-[10px]">
-                      ({Math.max(0, MIN_MESSAGE_CHARACTERS - messageLength)} more needed)
-                    </span>
                   )}
                 </div>
               </div>
@@ -509,13 +499,6 @@ const Contact = () => {
                     </p>
                   </div>
                 </button>
-              </div>
-
-              {/* Message Preview Box */}
-              <div className="p-3.5 rounded-xl bg-zinc-900/40 border border-zinc-800/60 text-xs font-mono text-zinc-500">
-                <span className="text-zinc-400 font-semibold block mb-1">Details being sent:</span>
-                <p className="truncate"><span className="text-zinc-500">From:</span> {formData.name} ({formData.email})</p>
-                <p className="line-clamp-2"><span className="text-zinc-500">Message:</span> {formData.message}</p>
               </div>
             </motion.div>
           </div>
