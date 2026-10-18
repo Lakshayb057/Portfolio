@@ -17,6 +17,11 @@ const internships = [
       "Entrusted with full-stack engineering, core frontend/backend feature delivery, and scalable application architecture.",
       "Collaborating with cross-functional product and engineering teams to build modern, performant web platforms.",
     ],
+    shortHighlights: [
+      "Full-stack web engineering & scalable feature delivery.",
+      "Building performant frontend interfaces & backend APIs.",
+      "Cross-functional development for production platforms.",
+    ],
     tech: ["React.js", "Node.js", "Full-Stack Development", "API Architecture", "Production Workflows"],
   },
   {
@@ -33,15 +38,20 @@ const internships = [
       "Collaborated with the core development team to design, test, debug, and integrate application features while maintaining strict code quality.",
       "Optimized data storage and retrieval by implementing efficient file-handling mechanisms, requirement analysis, and team-based delivery.",
     ],
+    shortHighlights: [
+      "Web & AI-driven application modules with Python & Django.",
+      "Feature engineering, automated debugging & code quality.",
+      "Data pipeline optimization and efficient file handling.",
+    ],
     tech: ["Python", "Django", "MongoDB", "AI Modules", "File Handling", "HTML/CSS"],
   },
 ];
 
 const Internships = () => {
   return (
-    <section id="internships" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
+    <section id="internships" className="pt-6 sm:pt-10 md:pt-20 pb-8 sm:pb-12 md:pb-24 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-14">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8 md:mb-14">
         <div className="flex items-center gap-4">
           <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
             <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">INTERNSHIPS</span>
@@ -64,12 +74,12 @@ const Internships = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: idx * 0.1 }}
             whileHover={{ y: -6, scale: 1.01, borderColor: 'rgba(239,68,68,0.4)', boxShadow: '0 0 30px rgba(239,68,68,0.15)' }}
-            className="bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-7 sm:p-9 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between"
+            className="bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-5 sm:p-7 md:p-9 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between"
           >
             <div>
-              {/* Status Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider border ${intern.badgeColor}`}>
+              {/* Status Header: Badge hidden on small screen (< sm) */}
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4 sm:mb-5">
+                <span className={`hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider border ${intern.badgeColor}`}>
                   <span className="w-1.5 h-1.5 rounded-full bg-current" />
                   {intern.badge}
                 </span>
@@ -81,10 +91,10 @@ const Internships = () => {
               </div>
 
               {/* Company & Role */}
-              <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-white mb-1">
+              <h3 className="font-display font-extrabold text-xl sm:text-2xl md:text-3xl text-white mb-1">
                 {intern.role}
               </h3>
-              <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-300 mb-6">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-zinc-300 mb-4 sm:mb-6">
                 <span className="font-semibold text-white">{intern.company}</span>
                 <span className="text-zinc-700">•</span>
                 <span className="inline-flex items-center gap-1 text-zinc-400 text-xs">
@@ -102,8 +112,8 @@ const Internships = () => {
                 )}
               </div>
 
-              {/* Highlights */}
-              <ul className="space-y-3 mb-8">
+              {/* Desktop Highlights (Full paragraphs for sm/md/lg) */}
+              <ul className="hidden sm:block space-y-3 mb-6 sm:mb-8">
                 {intern.highlights.map((pt, pIdx) => (
                   <li key={pIdx} className="flex items-start gap-3 text-zinc-300 text-sm leading-relaxed">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-2 flex-shrink-0" />
@@ -111,14 +121,24 @@ const Internships = () => {
                   </li>
                 ))}
               </ul>
+
+              {/* Mobile Single-Liner Pointers (Small screen size only) */}
+              <ul className="block sm:hidden space-y-2 mb-5">
+                {intern.shortHighlights.map((pt, pIdx) => (
+                  <li key={pIdx} className="flex items-start gap-2.5 text-zinc-300 text-xs leading-snug">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                    <span>{pt}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             {/* Tech Stack Tags */}
-            <div className="pt-5 border-t border-zinc-800/60 flex flex-wrap gap-2">
+            <div className="pt-4 sm:pt-5 border-t border-zinc-800/60 flex flex-wrap gap-1.5 sm:gap-2">
               {intern.tech.map((t) => (
                 <span
                   key={t}
-                  className="px-2.5 py-1 rounded-lg bg-zinc-950/80 border border-zinc-800 text-[11px] font-mono text-zinc-300 hover:border-red-500/30 transition-colors"
+                  className="px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg bg-zinc-950/80 border border-zinc-800 text-[10px] sm:text-[11px] font-mono text-zinc-300 hover:border-red-500/30 transition-colors"
                 >
                   {t}
                 </span>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 // Load all official multi-color brand SVG logos from assets
@@ -50,11 +50,31 @@ const skillsList = [
   { id: "postman", name: "POSTMAN", category: "tools", color: "#FF6C37", duration: 6.5, delay: 0.1 },
 ];
 
+// Helper to chunk skills into alternating row sizes: 7, 6, 7, 6, 7...
+const getMobileRows = (items) => {
+  const pattern = [7, 6];
+  const rows = [];
+  let currentIdx = 0;
+  let patternIdx = 0;
+
+  while (currentIdx < items.length) {
+    const rowSize = pattern[patternIdx % pattern.length];
+    rows.push(items.slice(currentIdx, currentIdx + rowSize));
+    currentIdx += rowSize;
+    patternIdx++;
+  }
+  return rows;
+};
+
+const mobileSkillRows = getMobileRows(skillsList);
+
 const Skills = () => {
+  const [activeSkillName, setActiveSkillName] = useState(null);
+
   return (
     <section 
       id="skills" 
-      className="min-h-screen py-20 lg:py-28 px-6 md:px-12 relative max-w-7xl mx-auto flex flex-col justify-center scroll-mt-20 overflow-visible"
+      className="pt-1 xs:pt-2 sm:pt-6 md:pt-20 lg:pt-28 pb-6 sm:pb-10 md:pb-24 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto flex flex-col md:justify-center md:min-h-screen scroll-mt-20 overflow-visible"
       style={{ perspective: 1400 }}
     >
       <div style={{ transformStyle: "preserve-3d" }}>
@@ -68,9 +88,9 @@ const Skills = () => {
           viewport={{ once: false, amount: 0.15 }}
           transition={{ duration: 0.8, type: "spring", stiffness: 100, damping: 20 }}
           style={{ transformStyle: "preserve-3d" }}
-          className="flex items-center gap-4 mb-12 sm:mb-14"
+          className="flex items-center gap-3 sm:gap-4 mb-3 xs:mb-5 sm:mb-10 md:mb-14"
         >
-          <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
+          <h2 className="hero-name-font tracking-wide text-white uppercase text-2xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
             <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">SKILLS & STACK</span>
             <span className="text-red-500 font-sans ml-1 text-2xl sm:text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
           </h2>
@@ -84,16 +104,79 @@ const Skills = () => {
         </motion.div>
 
         {/* =========================================================================
-            3D FLOATING CONSTELLATION GRID
-            - 3D spatial depth & entrance physics
-            - Interactive 3D pop on hover with authentic multi-color brand radiance
+            SKILLS SHOWCASE:
+            - Mobile (< md): Alternating rows: 7 in row 1, 6 in row 2, 7 in row 3, 6 in row 4, 7 in row 5
+            - Desktop (>= md): Full 3D constellation grid with hover physics
             ========================================================================= */}
         <div className="relative py-2" style={{ transformStyle: "preserve-3d" }}>
           {/* Subtle Ambient Red Core Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-500/[0.04] rounded-full blur-[80px] pointer-events-none" />
 
+          {/* =====================================================================
+              1. SMALL SCREEN LAYOUT (7 on row 1, 6 on row 2, 7 on row 3, ...)
+              ===================================================================== */}
+          <div className="flex md:hidden flex-col items-center gap-2 xs:gap-2.5 w-full max-w-lg mx-auto">
+            {mobileSkillRows.map((row, rowIdx) => (
+              <div 
+                key={`mobile-row-${rowIdx}`}
+                className="flex items-center justify-center gap-1.5 xs:gap-2 w-full"
+              >
+                {row.map((skill) => {
+                  const logoSrc = techLogos[`../assets/tech/${skill.id}.svg`];
+                  const isActive = activeSkillName === skill.name;
+
+                  return (
+                    <motion.div
+                      key={`mob-${skill.name}`}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => setActiveSkillName(isActive ? null : skill.name)}
+                      className="group relative flex flex-col items-center cursor-pointer select-none"
+                    >
+                      {/* Glow Highlight Tile */}
+                      <div
+                        className="w-[42px] h-[42px] xs:w-[48px] xs:h-[48px] rounded-xl xs:rounded-2xl bg-[#121215] border border-white/[0.09] flex items-center justify-center p-2 xs:p-2.5 transition-all duration-300 shadow-[0_6px_16px_rgba(0,0,0,0.55)] group-hover:bg-[#18181f]"
+                        style={{
+                          borderColor: isActive ? skill.color : 'rgba(255, 255, 255, 0.09)',
+                          boxShadow: isActive ? `0 0 18px ${skill.color}55, inset 0 0 10px ${skill.color}22` : '0 6px 16px rgba(0,0,0,0.55)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = skill.color;
+                          e.currentTarget.style.boxShadow = `0 0 18px ${skill.color}55, inset 0 0 10px ${skill.color}22`;
+                        }}
+                        onMouseLeave={(e) => {
+                          if (!isActive) {
+                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.09)';
+                            e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.55)';
+                          }
+                        }}
+                      >
+                        {logoSrc && (
+                          <img
+                            src={logoSrc}
+                            alt={skill.name}
+                            className={`w-5 h-5 xs:w-6 xs:h-6 object-contain transition-all duration-200 pointer-events-none ${
+                              isActive
+                                ? 'filter-none scale-110 drop-shadow-[0_2px_8px_rgba(255,255,255,0.3)]'
+                                : 'filter grayscale brightness-[1.8] contrast-[1.25] opacity-90 group-hover:filter-none group-hover:opacity-100 group-hover:scale-110'
+                            }`}
+                            loading="lazy"
+                            draggable={false}
+                          />
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ))}
+
+          </div>
+
+          {/* =====================================================================
+              2. DESKTOP / LARGE SCREEN CONSTELLATION GRID (>= md: 768px)
+              ===================================================================== */}
           <motion.div 
-            className="flex flex-wrap justify-center items-center gap-3.5 sm:gap-5 lg:gap-6 max-w-6xl mx-auto"
+            className="hidden md:flex flex-wrap justify-center items-center gap-3.5 sm:gap-5 lg:gap-6 max-w-6xl mx-auto"
             style={{ transformStyle: "preserve-3d" }}
           >
             {skillsList.map((skill, idx) => {

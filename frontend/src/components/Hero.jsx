@@ -54,14 +54,7 @@ const Hero = () => {
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
   );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 1024);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [isWhiteBg, setIsWhiteBg] = useState(false);
 
   // Pinned scroll container for the sequenced scroll reveal
   const { scrollYProgress } = useScroll({
@@ -76,10 +69,22 @@ const Hero = () => {
     restDelta: 0.001,
   });
 
-  // Track shifted layout state for text alignment
+  useEffect(() => {
+    const handleResize = () => {
+      const desktop = window.innerWidth >= 1024;
+      setIsDesktop(desktop);
+      setIsWhiteBg(!desktop && smoothProgress.get() > 0.18);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [smoothProgress]);
+
+  // Track shifted layout state for text alignment and white background detection on mobile
   const [isShifted, setIsShifted] = useState(false);
   useMotionValueEvent(smoothProgress, 'change', (latest) => {
     setIsShifted(latest > 0.12);
+    // On screens smaller than desktop (lg: 1024px), the white background covers the text area
+    setIsWhiteBg(!isDesktop && latest > 0.18);
   });
 
   // =========================================================================
@@ -96,6 +101,13 @@ const Hero = () => {
     smoothProgress,
     [0, 0.42],
     ['0vw', isDesktop ? '-17.5vw' : '0vw']
+  );
+
+  // Vertical glide on small screens to make room for photo below on white background with clean gap
+  const textY = useTransform(
+    smoothProgress,
+    [0.15, 0.42],
+    ['0vh', isDesktop ? '0vh' : '-18vh']
   );
 
   // Phase 2 (0.38 -> 0.78): Photo rises up from the BOTTOM of the screen
@@ -154,23 +166,52 @@ const Hero = () => {
         </div>
 
         {/* ========================================================
-            PHASE 1: WHITE BACKGROUND (35% WIDTH)
-            Scrolls out from the RIGHT border to cover 35% of screen
+            PHASE 1: WHITE BACKGROUND (35% WIDTH ON DESKTOP, FULL ON MOBILE)
+            Scrolls out from the RIGHT border to cover screen smoothly
+            Contains synchronized dark floating tool icons visible on white screen
             ======================================================== */}
         <motion.div
           style={{ x: whiteBgX }}
-          className="absolute inset-y-0 right-0 w-full lg:w-[35%] bg-white z-[1] pointer-events-none shadow-2xl"
+          className="absolute inset-y-0 right-0 w-full lg:w-[35%] bg-white z-[1] pointer-events-none shadow-2xl overflow-hidden"
         >
           {/* Subtle vertical divider hairline on desktop */}
-          <div className="absolute inset-y-0 left-0 w-[1px] bg-zinc-200/80 hidden lg:block" />
+          <div className="absolute inset-y-0 left-0 w-[1px] bg-zinc-200/80 hidden lg:block z-10" />
+
+          {/* Full-width stage inside white container anchored to right:
+              Renders floating tech logos with dark contrast on white backdrop */}
+          <div className="absolute inset-y-0 right-0 w-[100vw] h-full pointer-events-none overflow-hidden select-none">
+            {techLogos.map((tech, idx) => (
+              <motion.div
+                key={`white-tech-${idx}`}
+                initial={{ y: 0, x: 0, rotate: 0 }}
+                animate={{
+                  y: [0, -18, 0],
+                  x: [0, 8, -6, 0],
+                  rotate: [0, 5, -5, 0],
+                }}
+                transition={{
+                  duration: tech.duration,
+                  repeat: Infinity,
+                  repeatType: 'reverse',
+                  ease: 'easeInOut',
+                  delay: tech.delay,
+                }}
+                style={{ top: tech.top, left: tech.left }}
+                className={`absolute flex items-center justify-center opacity-[0.16] sm:opacity-[0.20] text-zinc-950 select-none ${tech.size} filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.06)]`}
+                title={tech.label}
+              >
+                <i className={tech.icon} />
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
 
         {/* ========================================================
             PHASE 2: LAKSHAY'S PHOTO
-            Centered horizontally within the 35% white area only,
-            grounded directly at the bottom edge (No hover tilt)
+            On desktop: Centered horizontally within the 35% white area
+            On mobile: Rises gracefully at bottom edge under text (Larger scale)
             ======================================================== */}
-        <div className="absolute inset-y-0 right-0 w-full lg:w-[35%] flex items-end justify-center pointer-events-none z-20 overflow-hidden">
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[35%] flex items-end justify-center pointer-events-none z-10 overflow-hidden">
           <motion.div
             style={{
               y: photoY,
@@ -182,7 +223,7 @@ const Hero = () => {
             <img
               src={lakshayImg}
               alt="Lakshay Bansal"
-              className="h-[76vh] sm:h-[84vh] lg:h-[88vh] xl:h-[92vh] max-h-[860px] max-w-full w-auto object-contain object-bottom rounded-2xl sm:rounded-3xl drop-shadow-[0_25px_45px_rgba(0,0,0,0.28)] pointer-events-none"
+              className="h-[53vh] xs:h-[55vh] sm:h-[62vh] md:h-[74vh] lg:h-[92vh] xl:h-[96vh] 2xl:h-[98vh] max-h-[960px] max-w-full w-auto object-contain object-bottom drop-shadow-[0_25px_45px_rgba(0,0,0,0.28)] pointer-events-none"
             />
           </motion.div>
         </div>
@@ -190,110 +231,144 @@ const Hero = () => {
         {/* ========================================================
             STAGE CONTAINER: TEXT CONTENT
             Starts centered across full screen, glides to LEFT on scroll
+            Dynamically inverts colors on mobile when white background moves in
             ======================================================== */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto h-full flex items-center justify-center px-4 sm:px-8 lg:px-12 pointer-events-none">
+        <div className="relative z-20 w-full max-w-7xl mx-auto h-full flex items-center justify-center px-4 sm:px-8 lg:px-12 pointer-events-none">
           <motion.div
-            style={{ x: textX }}
-            className="relative z-10 w-full max-w-xl lg:max-w-2xl xl:max-w-3xl flex flex-col pointer-events-auto px-4"
+            style={{ x: textX, y: textY }}
+            className="relative z-20 w-full max-w-xl lg:max-w-2xl xl:max-w-3xl flex flex-col pointer-events-auto px-4"
           >
-            {/* Eyebrow Role Badge (Increased Font Size, Clean Static Dot) */}
+            {/* Eyebrow Role Badge: Hidden on small screens (< sm), visible on desktop */}
             <motion.div
               layout
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className={`inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-zinc-900/70 border border-zinc-800 text-zinc-400 text-xs sm:text-sm font-mono tracking-[0.25em] uppercase mb-6 sm:mb-8 transition-all duration-500 ${
+              className={`hidden sm:inline-flex items-center gap-2.5 px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-sm font-mono tracking-[0.18em] sm:tracking-[0.2em] uppercase mb-4 sm:mb-8 transition-all duration-500 ${
                 isShifted && isDesktop ? 'self-start' : 'self-center'
+              } ${
+                isWhiteBg
+                  ? 'bg-black/[0.06] border border-black/15 text-zinc-800 shadow-sm'
+                  : 'bg-zinc-900/70 border border-zinc-800 text-zinc-400'
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-red-500" />
+              <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]" />
               <span>Full-Stack Developer & Software Engineer</span>
             </motion.div>
 
             {/* Main Display Typography: "LAKSHAY."
-                Using Monoton / multi-line inline stroke style from reference image */}
+                Using Monoton / multi-line inline stroke style from reference image
+                Adapts between glowing white on black and solid dark on white */}
             <motion.h1
               layout
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className={`hero-name-font tracking-wide text-white leading-none mb-6 transition-all duration-500 text-4xl sm:text-6xl md:text-7xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6.2rem] ${
+              className={`hero-name-font tracking-wide leading-none mb-3 sm:mb-6 transition-all duration-500 text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[4.6rem] xl:text-[5.5rem] 2xl:text-[6.2rem] ${
                 isShifted && isDesktop ? 'text-left' : 'text-center'
               }`}
             >
-              <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">LAKSHAY</span>
-              <span className="text-red-500 font-sans ml-1 text-3xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
+              <span
+                className={`transition-colors duration-500 ${
+                  isWhiteBg
+                    ? 'text-zinc-950 drop-shadow-[0_2px_12px_rgba(0,0,0,0.12)]'
+                    : 'text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]'
+                }`}
+              >
+                LAKSHAY
+              </span>
+              <span className="text-red-500 font-sans ml-1 text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
             </motion.h1>
 
-            {/* Subtitle (Increased Font Size) */}
+            {/* Subtitle (Adaptive contrast on white vs black) */}
             <motion.p
               layout
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className={`text-lg sm:text-xl md:text-2xl text-zinc-300 max-w-2xl font-normal leading-relaxed mb-8 sm:mb-10 transition-all duration-500 ${
+              className={`text-sm xs:text-base sm:text-xl md:text-2xl max-w-xs xs:max-w-md sm:max-w-2xl leading-relaxed mb-6 sm:mb-10 transition-all duration-500 ${
                 isShifted && isDesktop ? 'text-left self-start' : 'text-center self-center'
+              } ${
+                isWhiteBg
+                  ? 'text-zinc-800 font-medium'
+                  : 'text-zinc-300 font-normal'
               }`}
             >
               Crafting high-performance web experiences with code and creative strategy.
             </motion.p>
 
-            {/* Action Buttons (Increased Padding & Font Size, Reliable Actions) */}
+            {/* Action Buttons (Adaptive styles for white background) */}
             <motion.div
               layout
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className={`flex flex-wrap items-center gap-4 sm:gap-6 mb-10 sm:mb-14 transition-all duration-500 ${
+              className={`flex flex-col sm:flex-row items-center gap-3 sm:gap-6 mb-6 sm:mb-14 w-full transition-all duration-500 ${
                 isShifted && isDesktop ? 'justify-start' : 'justify-center'
               }`}
             >
-              {/* Download Resume Button: Downloads latest lakshay.pdf */}
+              {/* Download Resume Button: Inverts on white to pop cleanly */}
               <a
                 href="/lakshay.pdf"
                 download="lakshay.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 bg-white text-black hover:bg-zinc-200 px-8 sm:px-10 py-4 rounded-full font-bold text-sm sm:text-base tracking-wide transition-colors shadow-xl shadow-white/10"
+                className={`w-full max-w-[270px] sm:w-auto inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-bold text-sm sm:text-base tracking-wide transition-all ${
+                  isWhiteBg
+                    ? 'bg-zinc-950 text-white hover:bg-zinc-800 shadow-xl shadow-black/20'
+                    : 'bg-white text-black hover:bg-zinc-200 shadow-xl shadow-white/10'
+                }`}
               >
                 <span>Download Resume</span>
               </a>
 
-              {/* Get in Touch Button: Smooth scrolls to bottom contact form */}
+              {/* Get in Touch Button: Outlined adaptive button */}
               <a
                 href="#contact"
                 onClick={handleGetInTouch}
-                className="cursor-pointer inline-flex items-center justify-center gap-2 border border-zinc-700/80 bg-zinc-900/70 backdrop-blur-md text-white hover:bg-zinc-800 px-8 sm:px-10 py-4 rounded-full font-semibold text-sm sm:text-base tracking-wide transition-colors"
+                className={`cursor-pointer w-full max-w-[270px] sm:w-auto inline-flex items-center justify-center gap-2 px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-semibold text-sm sm:text-base tracking-wide transition-all ${
+                  isWhiteBg
+                    ? 'border border-zinc-400 bg-white/90 text-zinc-950 hover:bg-zinc-100 shadow-md'
+                    : 'border border-zinc-700/80 bg-zinc-900/70 backdrop-blur-md text-white hover:bg-zinc-800'
+                }`}
               >
                 <span>Get in Touch</span>
               </a>
             </motion.div>
 
-            {/* Social Profiles (Updated URLs & Aligned) */}
+            {/* Social Profiles (Adaptive text color) */}
             <motion.div
               layout
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className={`flex items-center gap-6 sm:gap-8 text-zinc-400 text-sm sm:text-base transition-all duration-500 ${
+              className={`flex items-center gap-4 sm:gap-8 text-xs sm:text-base transition-all duration-500 ${
                 isShifted && isDesktop ? 'justify-start' : 'justify-center'
+              } ${
+                isWhiteBg ? 'text-zinc-700' : 'text-zinc-400'
               }`}
             >
               <a
                 href="https://github.com/Lakshayb057"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white transition-colors duration-200 flex items-center gap-2"
+                className={`transition-colors duration-200 flex items-center gap-1.5 sm:gap-2 ${
+                  isWhiteBg ? 'hover:text-black' : 'hover:text-white'
+                }`}
               >
-                <Github size={18} />
+                <Github size={16} />
                 <span>GitHub</span>
               </a>
-              <span className="text-zinc-700">•</span>
+              <span className={isWhiteBg ? 'text-zinc-400' : 'text-zinc-700'}>•</span>
               <a
                 href="https://www.linkedin.com/in/lakshayb057/"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:text-white transition-colors duration-200 flex items-center gap-2"
+                className={`transition-colors duration-200 flex items-center gap-1.5 sm:gap-2 ${
+                  isWhiteBg ? 'hover:text-black' : 'hover:text-white'
+                }`}
               >
-                <Linkedin size={18} />
+                <Linkedin size={16} />
                 <span>LinkedIn</span>
               </a>
-              <span className="text-zinc-700">•</span>
+              <span className={isWhiteBg ? 'text-zinc-400' : 'text-zinc-700'}>•</span>
               <a
                 href="mailto:Lakshayb057@gmail.com"
-                className="hover:text-white transition-colors duration-200 flex items-center gap-2"
+                className={`transition-colors duration-200 flex items-center gap-1.5 sm:gap-2 ${
+                  isWhiteBg ? 'hover:text-black' : 'hover:text-white'
+                }`}
               >
-                <Mail size={18} />
+                <Mail size={16} />
                 <span className="hidden sm:inline">Lakshayb057@gmail.com</span>
                 <span className="sm:hidden">Mail</span>
               </a>

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Play, Zap, ExternalLink, CircleDollarSign, BarChart3, Database, X, Maximize2 } from 'lucide-react';
+import { ArrowUpRight, Play, Zap, ExternalLink, CircleDollarSign, BarChart3, Database, X, Maximize2, Sparkles } from 'lucide-react';
 
 const techTags = [
   'PERN Stack',
@@ -184,6 +184,39 @@ const UniverseVideoModal = ({ onClose }) => {
             </a>
           </div>
 
+          {/* Full Executive & Engineering Leadership Description */}
+          <div className="bg-[#121217] border border-white/[0.08] rounded-2xl p-5 sm:p-7 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-orange-500" />
+              <span className="text-[11px] font-mono uppercase tracking-wider text-orange-400 font-bold">
+                Executive & Engineering Leadership
+              </span>
+            </div>
+
+            <p className="text-zinc-200 text-sm sm:text-base leading-relaxed">
+              Architected and built as{' '}
+              <strong className="text-white font-bold bg-white/[0.08] px-2 py-0.5 rounded-md border border-white/10">
+                Co-Founder (Engineering, Growth & Finance)
+              </strong>
+              . UniVerse completely eliminates campus dining lines with instantaneous QR ordering, live kitchen display dispatching, and automated vendor settlements.
+            </p>
+
+            <div className="space-y-2.5 pt-3 border-t border-white/[0.06] text-xs sm:text-sm text-zinc-300">
+              <div className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
+                <span>Developing full-stack applications & real-time delivery systems using modern web technologies and WebSocket integration.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
+                <span>Spearheading marketing initiatives, promotional frameworks, user acquisition campaigns, and 50+ vendor onboarding.</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
+                <span>Managing financial operations, pricing structures, enterprise budgeting, and automated vendor settlements.</span>
+              </div>
+            </div>
+          </div>
+
           {/* Deep-Dive Pillars in Modal */}
           <div className="space-y-4 pt-2">
             <h4 className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
@@ -268,20 +301,104 @@ const UniverseVideoModal = ({ onClose }) => {
   );
 };
 
+// Reusable Media Showcase Card for both Mobile & Desktop viewports
+const UniverseMediaCard = ({ activeMedia, setActiveMedia, onOpenFullPage, videoRef }) => {
+  return (
+    <div className="relative rounded-3xl border border-zinc-800/90 bg-[#0d0d10] p-2.5 sm:p-3 shadow-2xl overflow-hidden group">
+      {/* Top-Right Graphic / Video Demo Switch Button Pill */}
+      <div className="absolute top-4 right-4 z-20 flex items-center bg-zinc-950/90 border border-white/10 rounded-full p-1 backdrop-blur-md shadow-xl">
+        <button
+          type="button"
+          id="universe-graphic-tab-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveMedia('graphic');
+          }}
+          className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
+            activeMedia === 'graphic'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          Graphic
+        </button>
+        <button
+          type="button"
+          id="universe-video-tab-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveMedia('video');
+            onOpenFullPage();
+          }}
+          className={`px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+            activeMedia === 'video'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
+              : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Play size={11} className={activeMedia === 'video' ? 'fill-white' : ''} />
+          <span>Video Demo</span>
+        </button>
+      </div>
+
+      {/* Display Media: Graphic Banner or Video Player (Click to open full page) */}
+      <div 
+        id="universe-media-container"
+        onClick={onOpenFullPage}
+        className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-zinc-950 flex items-center justify-center cursor-pointer group/media"
+      >
+        {activeMedia === 'graphic' ? (
+          <img
+            src="/universe_banner.png"
+            alt="UniVerse Campus Dining Platform"
+            className="w-full h-full object-cover rounded-2xl transition-all duration-300 group-hover:scale-[1.01]"
+            loading="lazy"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src="/universe_video.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover rounded-2xl bg-black"
+          />
+        )}
+
+        {/* Full Page Video Overlay Badge */}
+        <button
+          type="button"
+          id="universe-open-fullpage-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenFullPage();
+          }}
+          className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 hover:bg-orange-500 border border-white/20 text-white text-xs font-mono font-medium backdrop-blur-md shadow-xl transition-all duration-200 group-hover/media:scale-105 cursor-pointer"
+        >
+          <Maximize2 size={12} />
+          <span>Open Full Page</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const UniverseSection = () => {
   const [activeMedia, setActiveMedia] = useState('graphic'); // 'graphic' | 'video'
   const [isFullPageVideoOpen, setIsFullPageVideoOpen] = useState(false);
   const videoRef = useRef(null);
+  const mobileVideoRef = useRef(null);
 
   const handlePlayVideo = () => {
     setIsFullPageVideoOpen(true);
   };
 
   return (
-    <section id="universe" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
+    <section id="universe" className="pt-6 sm:pt-10 md:pt-20 pb-8 sm:pb-12 md:pb-24 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
       {/* Top Banner Row: Flagship Pill + Live URL */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-mono font-semibold tracking-wider">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
+        <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-mono font-semibold tracking-wider">
           <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
           <span>FLAGSHIP STARTUP • SHIPPED 0 TO 1</span>
         </div>
@@ -301,9 +418,9 @@ const UniverseSection = () => {
       </div>
 
       {/* Main Showcase Bento Grid: Left Details + Right Interactive Media Card */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center mb-8 sm:mb-12 md:mb-16">
         
-        {/* Left Column (lg:col-span-6): UniVerse Title, Subtitle, Role & Bio, Tech Stack, CTAs */}
+        {/* Left Column (lg:col-span-6): UniVerse Title, Subtitle, (Mobile Media Card), Role & Bio (Desktop), CTAs, Tech Stack */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -322,8 +439,18 @@ const UniverseSection = () => {
             Next-Gen Campus Dining & Multi-Vendor OS
           </h3>
 
-          {/* Position Description */}
-          <p className="text-zinc-300 text-sm sm:text-base leading-relaxed mb-4">
+          {/* Small Screen ONLY: Media Card (Video & Graphic) aligned right here in place of the detailed content */}
+          <div className="block lg:hidden mb-6">
+            <UniverseMediaCard
+              activeMedia={activeMedia}
+              setActiveMedia={setActiveMedia}
+              onOpenFullPage={handlePlayVideo}
+              videoRef={mobileVideoRef}
+            />
+          </div>
+
+          {/* Position Description (Desktop only) */}
+          <p className="hidden lg:block text-zinc-300 text-sm sm:text-base leading-relaxed mb-4">
             Architected and built as{' '}
             <strong className="text-white font-bold bg-white/[0.08] px-2 py-0.5 rounded-md border border-white/10">
               Co-Founder (Engineering, Growth & Finance)
@@ -331,8 +458,8 @@ const UniverseSection = () => {
             . UniVerse completely eliminates campus dining lines with instantaneous QR ordering, live kitchen display dispatching, and automated vendor settlements.
           </p>
 
-          {/* Operational & Engineering Key Responsibilities */}
-          <div className="space-y-2 mb-6 text-xs sm:text-sm text-zinc-400">
+          {/* Operational & Engineering Key Responsibilities (Desktop only) */}
+          <div className="hidden lg:block space-y-2 mb-6 text-xs sm:text-sm text-zinc-400">
             <div className="flex items-start gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 flex-shrink-0" />
               <span>Developing full-stack applications & real-time delivery systems using modern web technologies and WebSocket integration.</span>
@@ -347,8 +474,30 @@ const UniverseSection = () => {
             </div>
           </div>
 
-          {/* Tech Stack Pills from Screenshot */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-6">
+            <a
+              href="https://food.universeorder.co.in"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-white text-black hover:bg-zinc-200 font-bold px-6 sm:px-7 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-xl shadow-white/10"
+            >
+              <span>Visit Live Platform</span>
+              <ArrowUpRight size={16} />
+            </a>
+
+            <button
+              id="universe-play-video-btn"
+              onClick={handlePlayVideo}
+              className="inline-flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-orange-500/50 text-zinc-300 hover:text-white font-medium px-5 sm:px-6 py-3 sm:py-3.5 rounded-full text-xs sm:text-sm transition-all duration-200 hover:scale-105 active:scale-95 group cursor-pointer"
+            >
+              <Play size={14} className="text-orange-500 fill-orange-500 group-hover:scale-110 transition-transform" />
+              <span>Play Video Demo</span>
+            </button>
+          </div>
+
+          {/* Tech Stack Pills */}
+          <div className="flex flex-wrap gap-2 mb-2 lg:mb-0">
             {techTags.map((tag) => (
               <span
                 key={tag}
@@ -358,113 +507,22 @@ const UniverseSection = () => {
               </span>
             ))}
           </div>
-
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="https://food.universeorder.co.in"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-white text-black hover:bg-zinc-200 font-bold px-7 py-3.5 rounded-full text-sm transition-all duration-200 hover:scale-105 active:scale-95 shadow-xl shadow-white/10"
-            >
-              <span>Visit Live Platform</span>
-              <ArrowUpRight size={16} />
-            </a>
-
-            <button
-              id="universe-play-video-btn"
-              onClick={handlePlayVideo}
-              className="inline-flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-orange-500/50 text-zinc-300 hover:text-white font-medium px-6 py-3.5 rounded-full text-sm transition-all duration-200 hover:scale-105 active:scale-95 group cursor-pointer"
-            >
-              <Play size={14} className="text-orange-500 fill-orange-500 group-hover:scale-110 transition-transform" />
-              <span>Play Video Demo</span>
-            </button>
-          </div>
         </motion.div>
 
-        {/* Right Column (lg:col-span-6): Interactive Media Card with Graphic / Video Demo Switch */}
+        {/* Right Column (lg:col-span-6): Interactive Media Card for Desktop */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="lg:col-span-6"
+          className="hidden lg:block lg:col-span-6"
         >
-          <div className="relative rounded-3xl border border-zinc-800/90 bg-[#0d0d10] p-2.5 sm:p-3 shadow-2xl overflow-hidden group">
-            
-            {/* Top-Right Graphic / Video Demo Switch Button Pill */}
-            <div className="absolute top-4 right-4 z-20 flex items-center bg-zinc-950/90 border border-white/10 rounded-full p-1 backdrop-blur-md shadow-xl">
-              <button
-                id="universe-graphic-tab-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveMedia('graphic');
-                }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
-                  activeMedia === 'graphic'
-                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Graphic
-              </button>
-              <button
-                id="universe-video-tab-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveMedia('video');
-                  setIsFullPageVideoOpen(true);
-                }}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 ${
-                  activeMedia === 'video'
-                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                <Play size={11} className={activeMedia === 'video' ? 'fill-white' : ''} />
-                <span>Video Demo</span>
-              </button>
-            </div>
-
-            {/* Display Media: Graphic Banner or Video Player (Click to open full page) */}
-            <div 
-              id="universe-media-container"
-              onClick={() => setIsFullPageVideoOpen(true)}
-              className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-zinc-950 flex items-center justify-center cursor-pointer group/media"
-            >
-              {activeMedia === 'graphic' ? (
-                <img
-                  src="/universe_banner.png"
-                  alt="UniVerse Campus Dining Platform"
-                  className="w-full h-full object-cover rounded-2xl transition-all duration-300 group-hover:scale-[1.01]"
-                  loading="lazy"
-                />
-              ) : (
-                <video
-                  ref={videoRef}
-                  src="/universe_video.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-2xl bg-black"
-                />
-              )}
-
-              {/* Full Page Video Overlay Badge */}
-              <button
-                id="universe-open-fullpage-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsFullPageVideoOpen(true);
-                }}
-                className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 hover:bg-orange-500 border border-white/20 text-white text-xs font-mono font-medium backdrop-blur-md shadow-xl transition-all duration-200 group-hover/media:scale-105 cursor-pointer"
-              >
-                <Maximize2 size={12} />
-                <span>Open Full Page</span>
-              </button>
-            </div>
-          </div>
+          <UniverseMediaCard
+            activeMedia={activeMedia}
+            setActiveMedia={setActiveMedia}
+            onOpenFullPage={handlePlayVideo}
+            videoRef={videoRef}
+          />
         </motion.div>
 
       </div>
@@ -477,44 +535,51 @@ const UniverseSection = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="rounded-3xl border border-white/[0.08] bg-[#0c0c10] p-6 sm:p-8 lg:p-10 shadow-2xl relative overflow-hidden"
+        className="rounded-3xl border border-white/[0.08] bg-[#0c0c10] p-4 sm:p-7 lg:p-10 shadow-2xl relative overflow-hidden"
       >
         {/* Subtle Ambient Backing Glow */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/[0.04] rounded-full blur-[90px] pointer-events-none" />
 
         {/* Section Header */}
-        <div className="mb-8">
-          <span className="text-orange-500 font-mono text-xs font-bold tracking-widest uppercase block mb-1.5">
-            ENGINEERING DEEP-DIVE
-          </span>
-          <h3 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-[2.2rem] text-white tracking-tight leading-tight">
+        <div className="mb-5 sm:mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 font-mono text-[11px] font-bold tracking-widest uppercase mb-2 sm:mb-2.5">
+            <Sparkles size={12} className="text-orange-400" />
+            <span>ENGINEERING DEEP-DIVE</span>
+          </div>
+          <h3 className="font-display font-extrabold text-xl sm:text-3xl lg:text-[2.2rem] text-white tracking-tight leading-tight">
             Production Architecture & Core Systems Solved
           </h3>
+          <p className="text-zinc-400 text-xs sm:text-sm mt-1.5 max-w-2xl leading-relaxed">
+            High-concurrency event loops, idempotent financial pipelines, and secure AWS infrastructure powering the production platform.
+          </p>
         </div>
 
-        {/* 4 Deep-Dive Pillar Cards (2x2 Grid) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 mb-8">
+        {/* 4 Deep-Dive Pillar Cards (2 Columns horizontally on small screen & desktop) */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:gap-5 mb-5 sm:mb-8">
           {deepDivePillars.map((pillar, idx) => (
             <motion.div
               key={pillar.title}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: idx * 0.08 }}
+              transition={{ duration: 0.45, delay: idx * 0.06 }}
               whileHover={{ y: -3, borderColor: 'rgba(249,115,22,0.35)', boxShadow: '0 12px 30px rgba(0,0,0,0.5)' }}
-              className="bg-[#121217] border border-white/[0.07] rounded-2xl p-6 sm:p-7 transition-all duration-300 flex items-start gap-4 group"
+              className="bg-[#121217] border border-white/[0.07] hover:border-orange-500/30 rounded-2xl p-3 xs:p-4 sm:p-6 transition-all duration-300 flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4 group shadow-md"
             >
               {/* Rounded Dark Icon Box */}
-              <div className={`w-12 h-12 rounded-xl bg-[#181820] border ${pillar.accentBorder} flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform`}>
-                {pillar.icon}
+              <div className={`w-8 h-8 xs:w-9 xs:h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-[#181820] border ${pillar.accentBorder} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform`}>
+                {React.cloneElement(pillar.icon, { 
+                  size: 16, 
+                  className: `${pillar.icon.props.className} sm:w-[22px] sm:h-[22px]` 
+                })}
               </div>
 
               {/* Text Content */}
-              <div>
-                <h4 className="font-display font-bold text-base sm:text-lg text-white mb-2 leading-snug group-hover:text-orange-400 transition-colors">
+              <div className="flex-1 min-w-0">
+                <h4 className="font-display font-bold text-xs xs:text-sm sm:text-base text-white mb-1 sm:mb-1.5 leading-snug group-hover:text-orange-400 transition-colors">
                   {pillar.title}
                 </h4>
-                <p className="text-zinc-400 text-xs sm:text-sm leading-relaxed">
+                <p className="text-zinc-400 text-[10.5px] xs:text-[11.5px] sm:text-sm leading-relaxed">
                   {pillar.description}
                 </p>
               </div>
@@ -523,28 +588,28 @@ const UniverseSection = () => {
         </div>
 
         {/* Nested AWS Cloud & Security Topology Container */}
-        <div className="bg-[#08080b] border border-white/[0.06] rounded-2xl p-5 sm:p-6 mb-8">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="bg-[#08080b] border border-white/[0.06] rounded-2xl p-4 sm:p-6 mb-5 sm:mb-8">
+          <div className="flex items-center gap-2 mb-3.5 sm:mb-4">
             <span className="w-2 h-2 rounded-full bg-orange-500" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-bold">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-300 font-bold">
               PRODUCTION AWS CLOUD & SECURITY TOPOLOGY
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
             {awsTopology.map((item) => (
               <div
                 key={item.title}
-                className="bg-[#101015] border border-white/[0.05] hover:border-white/10 rounded-xl p-4 transition-all flex flex-col justify-between"
+                className="bg-[#101015] border border-white/[0.05] hover:border-orange-500/25 rounded-xl p-3.5 sm:p-4 transition-all flex flex-col justify-between"
               >
                 <div>
-                  <span className={`text-[10.5px] font-mono font-bold tracking-wider uppercase block mb-1.5 ${item.tagColor}`}>
+                  <span className={`text-[10px] sm:text-[10.5px] font-mono font-bold tracking-wider uppercase block mb-1 ${item.tagColor}`}>
                     {item.tag}
                   </span>
-                  <h5 className="font-display font-bold text-white text-sm mb-1.5 leading-snug">
+                  <h5 className="font-display font-bold text-white text-xs sm:text-sm mb-1 leading-snug">
                     {item.title}
                   </h5>
-                  <p className="text-zinc-400 text-xs leading-relaxed">
+                  <p className="text-zinc-400 text-[11px] sm:text-xs leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -554,12 +619,19 @@ const UniverseSection = () => {
         </div>
 
         {/* Footer Row: Live Deployment Status + Orange Launch Button */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-1 sm:pt-2 border-t border-white/[0.06]">
           <div className="flex items-center gap-2.5 text-xs sm:text-sm text-zinc-300">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse flex-shrink-0 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-            <span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+            <span className="truncate">
               Live Deployment Active at{' '}
-              <strong className="text-white font-mono font-semibold">food.universeorder.co.in</strong>
+              <a
+                href="https://food.universeorder.co.in"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white hover:text-orange-400 font-mono font-semibold underline underline-offset-2 transition-colors"
+              >
+                food.universeorder.co.in
+              </a>
             </span>
           </div>
 
@@ -567,7 +639,7 @@ const UniverseSection = () => {
             href="https://food.universeorder.co.in"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-mono font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full transition-all duration-200 shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95 flex-shrink-0"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-mono font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95 shrink-0 text-center cursor-pointer"
           >
             <span>LAUNCH LIVE APP →</span>
           </a>

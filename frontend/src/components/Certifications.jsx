@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { 
   Sparkles, 
   Cpu, 
@@ -8,8 +8,7 @@ import {
   Layout, 
   ExternalLink, 
   Maximize2,
-  X,
-  ZoomIn
+  X
 } from 'lucide-react';
 
 const certificatesData = [
@@ -83,8 +82,49 @@ const certificatesData = [
 const Certifications = () => {
   const [activeIndex, setActiveIndex] = useState(null);
   const [lightboxCert, setLightboxCert] = useState(null);
+  const [activeMobileIdx, setActiveMobileIdx] = useState(0);
 
-  // Track which certificate is currently scrolled into view
+  // Mobile horizontal scroll-linked progression
+  const mobileContainerRef = useRef(null);
+  const { scrollYProgress: mobileScrollY } = useScroll({
+    target: mobileContainerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  const smoothMobileScrollY = useSpring(mobileScrollY, {
+    stiffness: 110,
+    damping: 24,
+    restDelta: 0.001,
+  });
+
+  // 5 certificates: index 0 to 4
+  // Each certificate locks into center (0%, -100%, -200%, -300%, -400%)
+  const mobileX = useTransform(
+    smoothMobileScrollY,
+    [0, 0.08, 0.22, 0.32, 0.47, 0.57, 0.72, 0.82, 0.96],
+    ['0%', '0%', '-100%', '-100%', '-200%', '-200%', '-300%', '-300%', '-400%']
+  );
+
+  useMotionValueEvent(smoothMobileScrollY, 'change', (latest) => {
+    if (latest < 0.16) setActiveMobileIdx(0);
+    else if (latest < 0.40) setActiveMobileIdx(1);
+    else if (latest < 0.65) setActiveMobileIdx(2);
+    else if (latest < 0.85) setActiveMobileIdx(3);
+    else setActiveMobileIdx(4);
+  });
+
+  const jumpToMobileCert = (index) => {
+    if (!mobileContainerRef.current) return;
+    const rect = mobileContainerRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const containerTop = rect.top + scrollTop;
+    const scrollableDistance = mobileContainerRef.current.offsetHeight - window.innerHeight;
+    const targetProgress = [0.04, 0.27, 0.52, 0.77, 0.96][index];
+    const targetScrollY = containerTop + targetProgress * scrollableDistance;
+    window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+  };
+
+  // Track which certificate is currently scrolled into view on desktop
   useEffect(() => {
     const observers = [];
     certificatesData.forEach((cert, idx) => {
@@ -110,7 +150,6 @@ const Certifications = () => {
       const sectionEl = document.getElementById('certificates');
       if (!sectionEl) return;
       const rect = sectionEl.getBoundingClientRect();
-      // If user hasn't scrolled to certificates yet or has scrolled past
       if (rect.top > window.innerHeight * 0.6 || rect.bottom < window.innerHeight * 0.2) {
         setActiveIndex(null);
       }
@@ -123,7 +162,7 @@ const Certifications = () => {
     };
   }, []);
 
-  // Smooth scroll to a specific certificate
+  // Smooth scroll to a specific certificate on desktop
   const scrollToCert = (id) => {
     const el = document.getElementById(`cert-item-${id}`);
     if (el) {
@@ -133,20 +172,129 @@ const Certifications = () => {
 
   return (
     <>
-      <section id="certificates" className="pt-24 pb-32 lg:pb-44 px-6 md:px-12 relative max-w-7xl mx-auto scroll-mt-20">
+      <section id="certificates" className="relative w-full scroll-mt-20">
         
-        {/* 2-Column Layout: Left Sticky Header & Drawer + Right Free Certificates */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start relative">
+        {/* =========================================================================
+            MOBILE/TABLET VIEW (< lg: 1024px):
+            - No vertical list of certificate names
+            - Heading aligned exactly similarly to all other portfolio headings
+            - Horizontal scroll sequence pinned to viewport:
+              As user scrolls down the page:
+              - First certificate image is centered
+              - Active image glides out to LEFT edge
+              - Next certificate glides in from RIGHT edge to CENTER
+            ========================================================================= */}
+        <div ref={mobileContainerRef} className="lg:hidden relative h-[180vh] w-full">
+          <div className="sticky top-16 sm:top-20 h-auto w-full flex flex-col justify-start pt-2 xs:pt-3 sm:pt-6 pb-2 items-center overflow-hidden px-2 xs:px-4">
+            
+            {/* Section Header: Aligned similarly to all other portfolio section headings */}
+            <div className="w-full max-w-[430px] xs:max-w-[470px] sm:max-w-[520px] flex items-center justify-between gap-3 sm:gap-4 mb-3 xs:mb-4 px-1">
+              <div className="flex items-center gap-3 flex-grow">
+                <h2 className="hero-name-font tracking-wide text-white uppercase text-2xl sm:text-3xl md:text-4xl leading-none flex items-baseline">
+                  <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CERTIFICATES</span>
+                  <span className="text-red-500 font-sans ml-1 text-2xl sm:text-3xl md:text-4xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
+                </h2>
+                <div className="h-px bg-zinc-800/80 flex-grow max-w-[120px] xs:max-w-xs" />
+              </div>
+              <span className="text-[11px] font-mono text-zinc-400 bg-[#141418] border border-white/10 px-2.5 py-0.5 rounded-full flex-shrink-0">
+                0{activeMobileIdx + 1} / 0{certificatesData.length}
+              </span>
+            </div>
+
+            {/* Horizontal Moving Track */}
+            <div className="w-full overflow-hidden flex items-center justify-center py-1">
+              <motion.div
+                style={{ x: mobileX }}
+                className="flex w-full items-center"
+              >
+                {certificatesData.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className="w-full flex-shrink-0 flex flex-col items-center justify-center px-2 xs:px-3"
+                  >
+                    <div className="w-full max-w-[430px] xs:max-w-[470px] sm:max-w-[520px] flex flex-col">
+                      {/* Top strip: Certificate Label + Original link button (Enlarge removed) */}
+                      <div className="flex items-center justify-between mb-2 px-1">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
+                          <span className="text-xs sm:text-sm font-mono font-bold text-zinc-200 uppercase tracking-wide truncate max-w-[240px] xs:max-w-[300px]">
+                            {cert.tabLabel}
+                          </span>
+                        </div>
+                        <a
+                          href={cert.pdfSrc || cert.driveLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-red-400 hover:text-white bg-red-500/10 hover:bg-red-500 border border-red-500/20 px-3 py-1 rounded-full transition-all flex-shrink-0"
+                        >
+                          <span>Original</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      </div>
+
+                      {/* Best Fit Certificate Image Box (Optimized size) */}
+                      <div
+                        onClick={() => setLightboxCert(cert)}
+                        className="group relative w-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.92)] border border-white/[0.12] active:scale-[0.99] transition-all bg-zinc-950/90 cursor-pointer"
+                      >
+                        <img
+                          src={cert.imageSrc}
+                          alt={cert.headline}
+                          className="w-full h-auto max-h-[46vh] xs:max-h-[50vh] sm:max-h-[54vh] object-contain rounded-2xl"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                          <span className="inline-flex items-center gap-1.5 bg-zinc-950/90 text-white font-mono text-xs px-3.5 py-1.5 rounded-full border border-white/20">
+                            <Maximize2 size={12} />
+                            Click to View Fullscreen
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Bottom details (ID removed) */}
+                      <div className="mt-2.5 px-1 flex flex-col gap-0.5">
+                        <h3 className="text-xs xs:text-sm sm:text-base font-semibold text-white line-clamp-1">
+                          {cert.headline}
+                        </h3>
+                        <div className="flex items-center text-xs font-mono text-zinc-400">
+                          <span>{cert.issuer} • {cert.date}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Bottom Progress Bar & Indicator Pills */}
+            <div className="flex items-center gap-2 mt-3.5">
+              {certificatesData.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => jumpToMobileCert(idx)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeMobileIdx === idx
+                      ? 'w-7 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]'
+                      : 'w-2 bg-zinc-800 hover:bg-zinc-600'
+                  }`}
+                  aria-label={`Go to certificate ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+          </div>
+        </div>
+
+        {/* =========================================================================
+            DESKTOP VIEW (lg: 1024px+):
+            - Original 2-Column Layout: Left Sticky Header & Drawer + Right Free Certificates
+            ========================================================================= */}
+        <div className="hidden lg:grid grid-cols-12 gap-10 lg:gap-14 items-start relative pt-24 pb-32 lg:pb-44 px-6 md:px-12 max-w-7xl mx-auto">
           
-          {/* =========================================================================
-              LEFT COLUMN: STICKY ON SCREEN
-              - Holds the CERTIFICATES. heading (stays sticky with the view!)
-              - Holds the 5 drawer tiles
-              - Stays fixed in the viewport while the right column scrolls
-              ========================================================================= */}
+          {/* LEFT COLUMN: STICKY ON SCREEN */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-6">
             
-            {/* Section Header: Stays on screen while scrolling certificates! */}
+            {/* Section Header */}
             <div className="flex items-center gap-4">
               <h2 className="hero-name-font tracking-wide text-white uppercase text-2xl sm:text-3xl md:text-4xl lg:text-[2.8rem] leading-none flex items-baseline">
                 <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CERTIFICATES</span>
@@ -233,15 +381,6 @@ const Certifications = () => {
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => setLightboxCert(cert)}
-                      aria-label="Enlarge certificate"
-                      className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-400 hover:text-white bg-[#141418] hover:bg-zinc-800 border border-white/[0.08] px-2.5 py-1 rounded-full transition-colors"
-                    >
-                      <ZoomIn size={12} />
-                      <span className="hidden sm:inline">Enlarge</span>
-                    </button>
-
                     <a
                       href={cert.pdfSrc || cert.driveLink}
                       target="_blank"
@@ -275,10 +414,9 @@ const Certifications = () => {
                   </div>
                 </div>
 
-                {/* Floating Bottom Metadata */}
+                {/* Floating Bottom Metadata (ID removed) */}
                 <div className="flex items-center justify-between text-xs font-mono text-zinc-500 mt-2 px-1">
                   <span>Issued: <strong className="text-zinc-400">{cert.fullDate}</strong></span>
-                  <span>ID: <strong className="text-zinc-400">{cert.credentialId}</strong></span>
                 </div>
               </div>
             ))}
@@ -305,14 +443,14 @@ const Certifications = () => {
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-5xl w-full bg-[#111116] border border-white/10 rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col max-h-[90vh]"
             >
-              {/* Modal Header */}
+              {/* Modal Header (ID removed) */}
               <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
                 <div>
                   <h4 className="text-base sm:text-lg font-bold text-white leading-tight">
                     {lightboxCert.headline}
                   </h4>
                   <p className="text-xs font-mono text-zinc-400 mt-0.5">
-                    {lightboxCert.issuer} • {lightboxCert.fullDate} • ID: {lightboxCert.credentialId}
+                    {lightboxCert.issuer} • {lightboxCert.fullDate}
                   </p>
                 </div>
 

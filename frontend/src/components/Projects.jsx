@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { 
   ExternalLink, 
   Github, 
@@ -15,7 +15,9 @@ import {
   Cpu, 
   CheckCircle2, 
   Layers, 
-  FileText 
+  FileText,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const clientProjects = [
@@ -153,7 +155,7 @@ const ScreenshotBentoCard = ({ project, idx, onOpenModal }) => {
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.6, delay: idx * 0.08 }}
       onClick={() => onOpenModal(project)}
-      className={`group relative ${project.colSpan} col-span-12 rounded-[28px] sm:rounded-[34px] border border-white/[0.1] hover:border-red-500/50 bg-[#0e0e12] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85)] hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] transition-all duration-500 cursor-pointer min-h-[380px] sm:min-h-[440px] flex flex-col justify-end`}
+      className={`group relative ${project.colSpan} rounded-[28px] sm:rounded-[34px] border border-white/[0.1] hover:border-red-500/50 bg-[#0e0e12] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.85)] hover:shadow-[0_20px_50px_rgba(239,68,68,0.2)] transition-all duration-500 cursor-pointer min-h-[380px] sm:min-h-[440px] flex flex-col justify-end`}
     >
       {/* Background Media: Edge-to-Edge Autoplaying Video */}
       <div className="absolute inset-0 z-0 overflow-hidden bg-[#07070a]">
@@ -430,6 +432,75 @@ const ProjectDetailsModal = ({ project, onClose }) => {
 
 const Projects = () => {
   const [activeProjectModal, setActiveProjectModal] = useState(null);
+  const [activeMobileIdx, setActiveMobileIdx] = useState(0);
+
+  // Mobile horizontal scroll-linked progression (matching Certifications)
+  const mobileContainerRef = useRef(null);
+  const { scrollYProgress: mobileScrollY } = useScroll({
+    target: mobileContainerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  const smoothMobileScrollY = useSpring(mobileScrollY, {
+    stiffness: 110,
+    damping: 24,
+    restDelta: 0.001,
+  });
+
+  // 5 client projects: index 0 to 4
+  // Each project locks into center (0%, -100%, -200%, -300%, -400%)
+  const mobileX = useTransform(
+    smoothMobileScrollY,
+    [0, 0.08, 0.22, 0.32, 0.47, 0.57, 0.72, 0.82, 0.96],
+    ['0%', '0%', '-100%', '-100%', '-200%', '-200%', '-300%', '-300%', '-400%']
+  );
+
+  useMotionValueEvent(smoothMobileScrollY, 'change', (latest) => {
+    if (latest < 0.16) setActiveMobileIdx(0);
+    else if (latest < 0.40) setActiveMobileIdx(1);
+    else if (latest < 0.65) setActiveMobileIdx(2);
+    else if (latest < 0.85) setActiveMobileIdx(3);
+    else setActiveMobileIdx(4);
+  });
+
+  const jumpToMobileProject = (index) => {
+    if (!mobileContainerRef.current) return;
+    const clampedIndex = Math.max(0, Math.min(clientProjects.length - 1, index));
+    const rect = mobileContainerRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const containerTop = rect.top + scrollTop;
+    const scrollableDistance = mobileContainerRef.current.offsetHeight - window.innerHeight;
+    const targetProgress = [0.04, 0.27, 0.52, 0.77, 0.96][clampedIndex];
+    const targetScrollY = containerTop + targetProgress * scrollableDistance;
+
+    if (window.__lenis) {
+      window.__lenis.scrollTo(targetScrollY, { duration: 0.8 });
+    } else {
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+    }
+  };
+
+  // Support touch swipe gestures on mobile
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    const diffX = touchStartX.current - e.changedTouches[0].clientX;
+    const diffY = touchStartY.current - e.changedTouches[0].clientY;
+
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0 && activeMobileIdx < clientProjects.length - 1) {
+        jumpToMobileProject(activeMobileIdx + 1);
+      } else if (diffX < 0 && activeMobileIdx > 0) {
+        jumpToMobileProject(activeMobileIdx - 1);
+      }
+    }
+  };
 
   // Prevent background scrolling and pause Lenis when pop-up window is open
   useEffect(() => {
@@ -447,35 +518,187 @@ const Projects = () => {
   }, [activeProjectModal]);
 
   return (
-    <section 
-      id="client-projects" 
-      className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" 
-      style={{ perspective: 1200 }}
-    >
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-14">
-        <div className="flex items-center gap-4">
-          <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
-            <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CLIENT PROJECTS</span>
-            <span className="text-red-500 font-sans ml-1 text-2xl sm:text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
-          </h2>
-          <div className="hidden sm:block h-px bg-zinc-800/80 w-24" />
+    <section id="client-projects" className="relative w-full scroll-mt-20">
+      {/* =========================================================================
+          MOBILE VIEW (< lg: 1024px):
+          - Vertical scroll drives horizontal transition through all 5 projects
+          - Releases naturally into the next section (Education) after the 5th project
+          - Touch swipe & indicator pills also trigger project transitions
+          ========================================================================= */}
+      <div
+        ref={mobileContainerRef}
+        className="lg:hidden relative h-[190vh] w-full"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="sticky top-16 xs:top-20 sm:top-24 h-auto w-full flex flex-col justify-start pt-2.5 xs:pt-4 sm:pt-6 pb-2 items-center overflow-hidden px-2 xs:px-4">
+          {/* Section Header */}
+          <div className="w-full max-w-[430px] xs:max-w-[470px] sm:max-w-[520px] flex items-center justify-between gap-2 xs:gap-3 mb-3 xs:mb-4 px-1">
+            <div className="flex items-center gap-2 xs:gap-3 min-w-0">
+              <h2 className="hero-name-font tracking-wide text-white uppercase text-[19px] xs:text-[22px] sm:text-3xl leading-none flex items-baseline whitespace-nowrap">
+                <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CLIENT PROJECTS</span>
+                <span className="text-red-500 font-sans ml-1 text-xl xs:text-2xl sm:text-3xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
+              </h2>
+              <div className="hidden sm:block h-px bg-zinc-800/80 flex-grow max-w-[80px]" />
+            </div>
+            <span className="text-[11px] font-mono text-zinc-400 bg-[#141418] border border-white/10 px-2.5 py-0.5 rounded-full shrink-0">
+              0{activeMobileIdx + 1} / 0{clientProjects.length}
+            </span>
+          </div>
+
+          {/* Horizontal Moving Track */}
+          <div className="w-full overflow-hidden flex items-center justify-center py-1">
+            <motion.div
+              style={{ x: mobileX }}
+              className="flex w-full items-center"
+            >
+              {clientProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="w-full flex-shrink-0 flex flex-col items-center justify-center px-2 xs:px-3"
+                >
+                  <div className="w-full max-w-[430px] xs:max-w-[470px] sm:max-w-[520px] flex flex-col">
+                    {/* Top strip: Domain */}
+                    <div className="flex items-center justify-between mb-2 px-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]" />
+                        <span className="text-xs font-mono font-bold text-zinc-300 uppercase tracking-wide">
+                          {project.domain}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Video Card Container */}
+                    <div
+                      onClick={() => setActiveProjectModal(project)}
+                      className="group relative w-full h-[270px] xs:h-[310px] sm:h-[360px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.92)] border border-white/[0.12] active:scale-[0.99] transition-all bg-[#0e0e12] cursor-pointer flex flex-col justify-end"
+                    >
+                      {/* Background Video */}
+                      <div className="absolute inset-0 z-0 overflow-hidden bg-[#07070a]">
+                        {project.videoSrc && (
+                          <video
+                            src={project.videoSrc}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20 pointer-events-none" />
+                      </div>
+
+                      {/* Overlay Details */}
+                      <div className="relative z-20 p-4 xs:p-5 pt-8 pointer-events-none">
+                        <h3 className="font-display font-extrabold text-2xl xs:text-3xl text-white tracking-tight leading-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
+                          {project.title}
+                        </h3>
+                        <p className="text-zinc-300 text-xs xs:text-sm leading-relaxed mt-1.5 font-normal line-clamp-2 drop-shadow-[0_1px_8px_rgba(0,0,0,0.9)]">
+                          {project.subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Bottom Tech Stack Tags */}
+                    <div className="mt-2.5 px-1 flex flex-wrap gap-1.5">
+                      {project.tech.slice(0, 4).map((t) => (
+                        <span
+                          key={t}
+                          className="px-2 py-0.5 rounded-md bg-zinc-900/90 border border-white/10 text-[10px] font-mono text-zinc-400"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                      {project.tech.length > 4 && (
+                        <span className="px-2 py-0.5 rounded-md bg-zinc-900/50 text-[10px] font-mono text-zinc-500">
+                          +{project.tech.length - 4} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Bottom Progress Bar & Navigation Controls */}
+          <div className="flex items-center justify-between w-full max-w-[430px] xs:max-w-[470px] sm:max-w-[520px] mt-3 px-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-mono text-zinc-500">
+              <span className="text-zinc-400">Scroll down or swipe</span>
+            </div>
+
+            {/* Indicator Pills */}
+            <div className="flex items-center gap-1.5">
+              {clientProjects.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => jumpToMobileProject(idx)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    activeMobileIdx === idx
+                      ? 'w-7 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.7)]'
+                      : 'w-2 bg-zinc-800 hover:bg-zinc-600'
+                  }`}
+                  aria-label={`Go to project ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Chevrons */}
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => jumpToMobileProject(activeMobileIdx - 1)}
+                disabled={activeMobileIdx === 0}
+                className="p-1 rounded-full bg-zinc-900 border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-red-500/50 transition-colors"
+                aria-label="Previous Project"
+              >
+                <ChevronLeft size={13} />
+              </button>
+              <button
+                onClick={() => jumpToMobileProject(activeMobileIdx + 1)}
+                disabled={activeMobileIdx === clientProjects.length - 1}
+                className="p-1 rounded-full bg-zinc-900 border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:border-red-500/50 transition-colors"
+                aria-label="Next Project"
+              >
+                <ChevronRight size={13} />
+              </button>
+            </div>
+          </div>
         </div>
-        <p className="text-zinc-400 text-sm sm:text-base max-w-md">
-          Commercial solutions, enterprise infrastructure, and high-throughput fintech platforms. Click any project to open the full-screen showcase.
-        </p>
       </div>
 
-      {/* Bento Grid (Flagship Hero Card + 2x2 Asymmetric Grid) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-7">
-        {clientProjects.map((project, idx) => (
-          <ScreenshotBentoCard 
-            key={project.id} 
-            project={project} 
-            idx={idx} 
-            onOpenModal={setActiveProjectModal}
-          />
-        ))}
+      {/* =========================================================================
+          DESKTOP VIEW (lg: 1024px+):
+          - Original Asymmetric Bento Grid (Flagship Hero Card + 2x2 Asymmetric Grid)
+          ========================================================================= */}
+      <div 
+        className="hidden lg:block pt-6 sm:pt-10 md:pt-20 pb-8 sm:pb-12 md:pb-24 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto" 
+        style={{ perspective: 1200 }}
+      >
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-8 md:mb-14">
+          <div className="flex items-center gap-4">
+            <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-4xl md:text-5xl lg:text-[3.2rem] leading-none flex items-baseline">
+              <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CLIENT PROJECTS</span>
+              <span className="text-red-500 font-sans ml-1 text-2xl sm:text-4xl md:text-5xl drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>
+            </h2>
+            <div className="hidden sm:block h-px bg-zinc-800/80 w-24" />
+          </div>
+          <p className="text-zinc-400 text-sm sm:text-base max-w-md">
+            Commercial solutions, enterprise infrastructure, and high-throughput fintech platforms. Click any project to open the full-screen showcase.
+          </p>
+        </div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-12 gap-6 sm:gap-7">
+          {clientProjects.map((project, idx) => (
+            <ScreenshotBentoCard 
+              key={project.id} 
+              project={project} 
+              idx={idx} 
+              onOpenModal={setActiveProjectModal}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Entire Screen Pop-Up Window */}

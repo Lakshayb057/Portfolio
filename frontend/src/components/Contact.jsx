@@ -175,9 +175,9 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="pt-24 pb-8 px-6 md:px-12 relative max-w-7xl mx-auto">
+    <section id="contact" className="pt-6 sm:pt-10 md:pt-20 pb-8 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto">
       {/* Section Title */}
-      <div className="mb-14">
+      <div className="mb-5 sm:mb-8 md:mb-14">
         <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-none mb-4 flex items-baseline">
           <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">GET IN TOUCH</span>
           <span className="text-red-500 font-sans ml-1 text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]">.</span>

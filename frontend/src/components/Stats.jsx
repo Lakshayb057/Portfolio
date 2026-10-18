@@ -95,9 +95,9 @@ const Stats = () => {
   }, [stats.leetcode?.submissionCalendar]);
 
   return (
-    <section id="stats" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
+    <section id="stats" className="pt-6 sm:pt-10 md:pt-20 pb-6 sm:pb-10 md:pb-24 px-4 sm:px-6 md:px-12 relative max-w-7xl mx-auto" style={{ perspective: 1200 }}>
       {/* Section Header with Monoton Branding & Live Sync Status */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-5 sm:mb-8 md:mb-12">
         <div>
           <h2 className="hero-name-font tracking-wide text-white uppercase text-2xl sm:text-3xl md:text-4xl lg:text-[2.8rem] leading-none flex items-baseline">
             <span className="drop-shadow-[0_0_20px_rgba(255,255,255,0.15)]">CODING STATS</span>
@@ -408,9 +408,9 @@ const Stats = () => {
               )}
             </div>
 
-            {/* Recent Accepted Submissions Live Tags */}
+            {/* Recent Accepted Submissions Live Tags (Hidden on small screen size) */}
             {stats.leetcode.recentSubmissions && stats.leetcode.recentSubmissions.length > 0 && (
-              <div className="mt-5 pt-4 border-t border-zinc-800/60">
+              <div className="hidden sm:block mt-5 pt-4 border-t border-zinc-800/60">
                 <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase font-semibold block mb-2.5">
                   RECENT LIVE ACCEPTED SUBMISSIONS
                 </span>
