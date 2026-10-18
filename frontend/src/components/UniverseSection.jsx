@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowUpRight, Play, Zap, ExternalLink, CircleDollarSign, BarChart3, Database } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, Play, Zap, ExternalLink, CircleDollarSign, BarChart3, Database, X, Maximize2 } from 'lucide-react';
 
 const techTags = [
   'PERN Stack',
@@ -74,17 +75,123 @@ const awsTopology = [
   },
 ];
 
+const UniverseVideoModal = ({ onClose }) => {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    if (window.__lenis) window.__lenis.stop();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      if (window.__lenis) window.__lenis.start();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[99999] w-screen h-screen bg-[#07070a]/98 backdrop-blur-3xl overflow-y-auto flex flex-col"
+    >
+      {/* Sticky Top Header Bar */}
+      <header className="sticky top-0 z-[1000] w-full bg-[#09090e]/95 backdrop-blur-2xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+            <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+            <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
+          </div>
+          <span className="text-xs sm:text-sm font-mono text-zinc-300 font-medium flex items-center gap-1.5 ml-2">
+            <Zap size={13} className="text-orange-400" /> food.universeorder.co.in
+          </span>
+          <span className="hidden sm:inline-block text-zinc-600 font-mono">|</span>
+          <span className="hidden sm:inline-block text-xs font-mono text-zinc-400">
+            UniVerse • Flagship Campus Dining OS Full Screen Demo
+          </span>
+        </div>
+
+        {/* Dedicated Cross Button */}
+        <button
+          id="universe-modal-close-btn"
+          onClick={onClose}
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-mono text-xs font-bold shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          title="Close video (Return to portfolio)"
+          aria-label="Close"
+        >
+          <span>Close</span>
+          <X size={16} className="text-white" />
+        </button>
+      </header>
+
+      {/* Modal Video Content Area */}
+      <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8">
+        {/* Full Theatre Video Screen */}
+        <div className="relative w-full aspect-video max-h-[75vh] rounded-2xl sm:rounded-3xl bg-black border border-white/15 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] flex items-center justify-center">
+          <video
+            src="/universe_video.mp4"
+            controls
+            autoPlay
+            playsInline
+            className="w-full h-full object-contain bg-black"
+          />
+        </div>
+
+        {/* Info & Bottom Return Button */}
+        <div className="space-y-6 bg-[#0c0d12] border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+            <div>
+              <span className="text-xs font-mono text-orange-400 uppercase tracking-wider block mb-1">
+                Flagship Startup • 0 to 1 Engineering
+              </span>
+              <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
+                UniVerse — Campus Dining & Multi-Vendor OS
+              </h2>
+              <p className="text-zinc-400 text-sm sm:text-base mt-2 max-w-2xl">
+                Eliminating campus dining wait times with real-time QR ordering, automated kitchen dispatching, and vendor split settlements.
+              </p>
+            </div>
+
+            <a
+              href="https://food.universeorder.co.in"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-mono text-xs sm:text-sm font-semibold px-6 py-3 rounded-full transition-all shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95 shrink-0"
+            >
+              <span>Visit Live Platform</span>
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+
+          {/* Return CTA */}
+          <div className="pt-2 flex justify-center">
+            <button
+              onClick={onClose}
+              className="inline-flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 border border-white/15 hover:border-orange-500/50 text-white font-mono text-xs sm:text-sm px-6 py-2.5 rounded-full transition-all shadow-md"
+            >
+              <span>Back to Portfolio</span>
+              <X size={14} className="text-orange-400" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>,
+    document.body
+  );
+};
+
 const UniverseSection = () => {
   const [activeMedia, setActiveMedia] = useState('graphic'); // 'graphic' | 'video'
+  const [isFullPageVideoOpen, setIsFullPageVideoOpen] = useState(false);
   const videoRef = useRef(null);
 
   const handlePlayVideo = () => {
-    setActiveMedia('video');
-    setTimeout(() => {
-      if (videoRef.current) {
-        videoRef.current.play().catch(() => {});
-      }
-    }, 150);
+    setIsFullPageVideoOpen(true);
   };
 
   return (
@@ -182,8 +289,9 @@ const UniverseSection = () => {
             </a>
 
             <button
+              id="universe-play-video-btn"
               onClick={handlePlayVideo}
-              className="inline-flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-orange-500/50 text-zinc-300 hover:text-white font-medium px-6 py-3.5 rounded-full text-sm transition-all duration-200 hover:scale-105 active:scale-95 group"
+              className="inline-flex items-center gap-2 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 hover:border-orange-500/50 text-zinc-300 hover:text-white font-medium px-6 py-3.5 rounded-full text-sm transition-all duration-200 hover:scale-105 active:scale-95 group cursor-pointer"
             >
               <Play size={14} className="text-orange-500 fill-orange-500 group-hover:scale-110 transition-transform" />
               <span>Play Video Demo</span>
@@ -204,7 +312,11 @@ const UniverseSection = () => {
             {/* Top-Right Graphic / Video Demo Switch Button Pill */}
             <div className="absolute top-4 right-4 z-20 flex items-center bg-zinc-950/90 border border-white/10 rounded-full p-1 backdrop-blur-md shadow-xl">
               <button
-                onClick={() => setActiveMedia('graphic')}
+                id="universe-graphic-tab-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveMedia('graphic');
+                }}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
                   activeMedia === 'graphic'
                     ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
@@ -214,7 +326,12 @@ const UniverseSection = () => {
                 Graphic
               </button>
               <button
-                onClick={handlePlayVideo}
+                id="universe-video-tab-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveMedia('video');
+                  setIsFullPageVideoOpen(true);
+                }}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 ${
                   activeMedia === 'video'
                     ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20'
@@ -226,8 +343,12 @@ const UniverseSection = () => {
               </button>
             </div>
 
-            {/* Display Media: Graphic Banner or Video Player */}
-            <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-zinc-950 flex items-center justify-center">
+            {/* Display Media: Graphic Banner or Video Player (Click to open full page) */}
+            <div 
+              id="universe-media-container"
+              onClick={() => setIsFullPageVideoOpen(true)}
+              className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-zinc-950 flex items-center justify-center cursor-pointer group/media"
+            >
               {activeMedia === 'graphic' ? (
                 <img
                   src="/universe_banner.png"
@@ -239,13 +360,26 @@ const UniverseSection = () => {
                 <video
                   ref={videoRef}
                   src="/universe_video.mp4"
-                  controls
                   autoPlay
                   loop
+                  muted
                   playsInline
                   className="w-full h-full object-cover rounded-2xl bg-black"
                 />
               )}
+
+              {/* Full Page Video Overlay Badge */}
+              <button
+                id="universe-open-fullpage-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsFullPageVideoOpen(true);
+                }}
+                className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/85 hover:bg-orange-500 border border-white/20 text-white text-xs font-mono font-medium backdrop-blur-md shadow-xl transition-all duration-200 group-hover/media:scale-105 cursor-pointer"
+              >
+                <Maximize2 size={12} />
+                <span>Open Full Page</span>
+              </button>
             </div>
           </div>
         </motion.div>
@@ -357,6 +491,13 @@ const UniverseSection = () => {
         </div>
 
       </motion.div>
+
+      {/* UniVerse Full-Screen Video Modal */}
+      <AnimatePresence>
+        {isFullPageVideoOpen && (
+          <UniverseVideoModal onClose={() => setIsFullPageVideoOpen(false)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ExternalLink, 
@@ -171,6 +172,12 @@ const ScreenshotBentoCard = ({ project, idx, onOpenModal }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 to-black/20 group-hover:via-black/45 transition-colors duration-500 pointer-events-none" />
       </div>
 
+      {/* Top-Right Badge: Full Screen Video */}
+      <div className="absolute top-5 right-5 z-20 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/80 group-hover:bg-red-600/90 border border-white/20 group-hover:border-red-500 text-white text-xs font-mono backdrop-blur-md shadow-xl transition-all duration-300">
+        <Play size={11} className="text-red-400 group-hover:text-white fill-current" />
+        <span>Open Full Screen</span>
+      </div>
+
       {/* Bottom Content Overlaid (Matches Screenshot's Bold Title + 2-line Subtitle) */}
       <div className="relative z-20 p-6 sm:p-9 pt-8 pointer-events-none">
         <h3 className="font-display font-extrabold text-3xl sm:text-4xl text-white tracking-tight leading-tight group-hover:text-red-400 transition-colors drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
@@ -188,24 +195,33 @@ const ScreenshotBentoCard = ({ project, idx, onOpenModal }) => {
 // Entire Screen Pop-Up Window for Project Video & Complete Info
 const ProjectDetailsModal = ({ project, onClose }) => {
   useEffect(() => {
+    // Lock body scroll and pause Lenis while modal is open
+    document.body.style.overflow = 'hidden';
+    if (window.__lenis) window.__lenis.stop();
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      if (window.__lenis) window.__lenis.start();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [onClose]);
 
   if (!project) return null;
 
-  return (
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 w-screen h-screen bg-[#07070a]/95 backdrop-blur-2xl overflow-y-auto flex flex-col"
+      className="fixed inset-0 z-[99999] w-screen h-screen bg-[#07070a]/98 backdrop-blur-3xl overflow-y-auto flex flex-col"
     >
       {/* Sticky Top Header Bar */}
-      <header className="sticky top-0 z-30 w-full bg-[#09090e]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-[1000] w-full bg-[#09090e]/95 backdrop-blur-2xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
@@ -217,26 +233,28 @@ const ProjectDetailsModal = ({ project, onClose }) => {
           </span>
           <span className="hidden sm:inline-block text-zinc-600 font-mono">|</span>
           <span className="hidden sm:inline-block text-xs font-mono text-zinc-400">
-            {project.title} Showcase
+            {project.title} Full Screen Showcase
           </span>
         </div>
 
-        {/* Close Pop-Up Button */}
+        {/* Dedicated Cross Button */}
         <button
+          id="project-modal-close-btn"
           onClick={onClose}
-          className="flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full bg-zinc-800/80 hover:bg-red-500/20 hover:border-red-500/50 border border-white/10 text-zinc-300 hover:text-white transition-all text-xs font-mono group shadow-lg"
-          aria-label="Close window"
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-600 hover:bg-red-500 text-white font-mono text-xs font-bold shadow-xl transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer"
+          title="Close video (Return to portfolio)"
+          aria-label="Close"
         >
           <span>Close</span>
-          <X size={15} className="group-hover:rotate-90 transition-transform duration-200" />
+          <X size={16} className="text-white" />
         </button>
       </header>
 
-      {/* Scrollable Full-Screen Content Area */}
-      <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-12 space-y-10">
+      {/* Full-Screen Content Area */}
+      <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8">
         
         {/* Full Theatre Video Screen */}
-        <div className="relative w-full aspect-video rounded-2xl sm:rounded-3xl bg-black border border-white/15 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.9)]">
+        <div className="relative w-full aspect-video max-h-[75vh] rounded-2xl sm:rounded-3xl bg-black border border-white/15 overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.95)] flex items-center justify-center">
           {project.videoSrc && (
             <video
               src={project.videoSrc}
@@ -387,22 +405,26 @@ const ProjectDetailsModal = ({ project, onClose }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 };
 
 const Projects = () => {
   const [activeProjectModal, setActiveProjectModal] = useState(null);
 
-  // Prevent background scrolling when pop-up window is open
+  // Prevent background scrolling and pause Lenis when pop-up window is open
   useEffect(() => {
     if (activeProjectModal) {
       document.body.style.overflow = 'hidden';
+      if (window.__lenis) window.__lenis.stop();
     } else {
       document.body.style.overflow = '';
+      if (window.__lenis) window.__lenis.start();
     }
     return () => {
       document.body.style.overflow = '';
+      if (window.__lenis) window.__lenis.start();
     };
   }, [activeProjectModal]);
 
