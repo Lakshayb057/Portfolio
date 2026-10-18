@@ -14,8 +14,6 @@ import {
   ExternalLink 
 } from 'lucide-react';
 
-const MIN_MESSAGE_CHARACTERS = 150;
-
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState({ name: '', email: '', message: '' });
@@ -54,11 +52,7 @@ const Contact = () => {
   const validateMessage = (msg) => {
     const trimmed = msg.trim();
     if (!trimmed) {
-      return `Message is required (minimum ${MIN_MESSAGE_CHARACTERS} characters).`;
-    }
-    if (trimmed.length < MIN_MESSAGE_CHARACTERS) {
-      const remaining = MIN_MESSAGE_CHARACTERS - trimmed.length;
-      return `Message must be at least ${MIN_MESSAGE_CHARACTERS} characters (currently ${trimmed.length} / ${MIN_MESSAGE_CHARACTERS} — ${remaining} more needed).`;
+      return "Message is required.";
     }
     return "";
   };
@@ -179,10 +173,6 @@ const Contact = () => {
     setErrors({ name: '', email: '', message: '' });
     setTimeout(() => setStatus(''), 7000);
   };
-
-  const messageLength = formData.message.trim().length;
-  const isMessageValid = messageLength >= MIN_MESSAGE_CHARACTERS;
-  const messageProgress = Math.min(100, Math.round((messageLength / MIN_MESSAGE_CHARACTERS) * 100));
 
   return (
     <section id="contact" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto">
@@ -339,25 +329,15 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* 3. Message Textarea with 150+ Character validation */}
+            {/* 3. Message Textarea */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
-                  Message
-                </label>
-                <div className="flex items-center gap-1.5 text-[11px] font-mono">
-                  <span className={isMessageValid ? 'text-emerald-400 font-semibold' : 'text-zinc-500'}>
-                    {messageLength} / {MIN_MESSAGE_CHARACTERS}
-                  </span>
-                  {isMessageValid && (
-                    <CheckCircle size={13} className="text-emerald-400" />
-                  )}
-                </div>
-              </div>
+              <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
+                Message
+              </label>
 
               <textarea
                 rows={5}
-                placeholder="Write your project details, goals, or role overview here (minimum 150 characters)..."
+                placeholder="How can I help you?"
                 value={formData.message}
                 onChange={(e) => handleChange('message', e.target.value)}
                 onBlur={() => handleBlur('message')}
@@ -369,18 +349,6 @@ const Contact = () => {
                     : 'border-zinc-800 focus:border-red-500'
                 }`}
               />
-
-              {/* Progress bar towards 150 chars */}
-              <div className="w-full bg-zinc-900 h-1 rounded-full overflow-hidden mt-1.5">
-                <div 
-                  className={`h-full transition-all duration-300 ${
-                    isMessageValid 
-                      ? 'bg-emerald-500' 
-                      : 'bg-gradient-to-r from-red-600 to-rose-400'
-                  }`}
-                  style={{ width: `${messageProgress}%` }}
-                />
-              </div>
 
               {touched.message && errors.message && (
                 <p className="flex items-center gap-1.5 text-xs font-mono text-red-400 mt-2">
