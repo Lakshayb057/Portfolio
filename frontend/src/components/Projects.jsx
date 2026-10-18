@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -194,10 +194,27 @@ const ScreenshotBentoCard = ({ project, idx, onOpenModal }) => {
 
 // Entire Screen Pop-Up Window for Project Video & Complete Info
 const ProjectDetailsModal = ({ project, onClose }) => {
+  const scrollContainerRef = useRef(null);
+
   useEffect(() => {
-    // Lock body scroll and pause Lenis while modal is open
+    // Lock body scroll while modal is open
     document.body.style.overflow = 'hidden';
-    if (window.__lenis) window.__lenis.stop();
+
+    // Auto-focus container so arrow keys and page down work immediately
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.focus();
+    }
+
+    const container = scrollContainerRef.current;
+    const handleNativeWheel = (e) => {
+      // Stop event from bubbling to window so external scroll interceptors (Lenis) don't block native modal scroll
+      e.stopPropagation();
+    };
+
+    if (container) {
+      container.addEventListener('wheel', handleNativeWheel, { passive: true });
+      container.addEventListener('touchmove', handleNativeWheel, { passive: true });
+    }
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
@@ -206,7 +223,10 @@ const ProjectDetailsModal = ({ project, onClose }) => {
 
     return () => {
       document.body.style.overflow = '';
-      if (window.__lenis) window.__lenis.start();
+      if (container) {
+        container.removeEventListener('wheel', handleNativeWheel);
+        container.removeEventListener('touchmove', handleNativeWheel);
+      }
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
@@ -215,20 +235,18 @@ const ProjectDetailsModal = ({ project, onClose }) => {
 
   return createPortal(
     <motion.div
+      ref={scrollContainerRef}
+      tabIndex={-1}
+      data-lenis-prevent="true"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[99999] w-screen h-screen bg-[#07070a]/98 backdrop-blur-3xl overflow-y-auto flex flex-col"
+      className="fixed inset-0 z-[99999] w-full h-full bg-[#07070a]/98 backdrop-blur-3xl overflow-y-auto overscroll-contain flex flex-col focus:outline-none"
     >
       {/* Sticky Top Header Bar */}
       <header className="sticky top-0 z-[1000] w-full bg-[#09090e]/95 backdrop-blur-2xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-2xl">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-            <span className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-            <span className="w-3 h-3 rounded-full bg-[#27c93f]" />
-          </div>
-          <span className="text-xs sm:text-sm font-mono text-zinc-300 font-medium flex items-center gap-1.5 ml-2">
+          <span className="text-xs sm:text-sm font-mono text-zinc-300 font-medium flex items-center gap-1.5">
             <Lock size={12} className="text-emerald-400" /> {project.domain}
           </span>
           <span className="hidden sm:inline-block text-zinc-600 font-mono">|</span>
