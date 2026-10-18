@@ -4,12 +4,12 @@ import { ArrowUp, Github, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="border-t border-zinc-800/80 bg-black relative z-10 overflow-hidden">
+    <footer className="relative z-10 overflow-hidden">
       {/* Background Ambient Red Glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[180px] bg-red-600/5 blur-[120px] pointer-events-none rounded-full" />
 
       {/* Main Footer Container */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-8 pb-8 relative z-10 flex flex-col justify-between">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-0 pb-8 relative z-10 flex flex-col justify-between">
         
         {/* 1. Large Light Grey Typography Name Spanning Less Than Half Screen */}
         <div className="w-full py-4 md:py-8 flex items-center justify-center overflow-hidden select-none pointer-events-none">

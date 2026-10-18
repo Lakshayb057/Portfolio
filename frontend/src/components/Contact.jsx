@@ -175,7 +175,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto">
+    <section id="contact" className="pt-24 pb-8 px-6 md:px-12 relative max-w-7xl mx-auto">
       {/* Section Title */}
       <div className="mb-14">
         <h2 className="hero-name-font tracking-wide text-white uppercase text-3xl sm:text-5xl md:text-6xl lg:text-[4.2rem] leading-none mb-4 flex items-baseline">
