@@ -14,10 +14,74 @@ import {
   ExternalLink 
 } from 'lucide-react';
 
+const MIN_MESSAGE_CHARACTERS = 150;
+
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [errors, setErrors] = useState({ name: '', email: '', message: '' });
+  const [touched, setTouched] = useState({ name: false, email: false, message: false });
   const [status, setStatus] = useState('');
   const [showChannelModal, setShowChannelModal] = useState(false);
+
+  // Field Validation Logic
+  const validateName = (name) => {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      return "Full name is required.";
+    }
+    const parts = trimmed.split(/\s+/);
+    if (parts.length < 2) {
+      return "Please enter both your first and last name separated by a space (e.g. John Doe).";
+    }
+    if (parts[0].length < 2 || parts[1].length < 2) {
+      return "Both first and last name must be at least 2 characters.";
+    }
+    return "";
+  };
+
+  const validateEmail = (email) => {
+    const trimmed = email.trim();
+    if (!trimmed) {
+      return "Email address is required.";
+    }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmed)) {
+      return "Please enter a valid email format (e.g. yourname@domain.com).";
+    }
+    return "";
+  };
+
+  const validateMessage = (msg) => {
+    const trimmed = msg.trim();
+    if (!trimmed) {
+      return `Message is required (minimum ${MIN_MESSAGE_CHARACTERS} characters).`;
+    }
+    if (trimmed.length < MIN_MESSAGE_CHARACTERS) {
+      const remaining = MIN_MESSAGE_CHARACTERS - trimmed.length;
+      return `Message must be at least ${MIN_MESSAGE_CHARACTERS} characters (currently ${trimmed.length} / ${MIN_MESSAGE_CHARACTERS} — ${remaining} more needed).`;
+    }
+    return "";
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    let errorMsg = '';
+    if (field === 'name') errorMsg = validateName(formData.name);
+    else if (field === 'email') errorMsg = validateEmail(formData.email);
+    else if (field === 'message') errorMsg = validateMessage(formData.message);
+    setErrors((prev) => ({ ...prev, [field]: errorMsg }));
+  };
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (touched[field]) {
+      let errorMsg = '';
+      if (field === 'name') errorMsg = validateName(value);
+      else if (field === 'email') errorMsg = validateEmail(value);
+      else if (field === 'message') errorMsg = validateMessage(value);
+      setErrors((prev) => ({ ...prev, [field]: errorMsg }));
+    }
+  };
 
   // Background backup submission to Web3Forms
   const submitToWeb3Forms = async () => {
@@ -43,10 +107,26 @@ const Contact = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+    
+    // Mark all fields as touched
+    setTouched({ name: true, email: true, message: true });
+
+    const nameErr = validateName(formData.name);
+    const emailErr = validateEmail(formData.email);
+    const messageErr = validateMessage(formData.message);
+
+    setErrors({
+      name: nameErr,
+      email: emailErr,
+      message: messageErr,
+    });
+
+    // Block submission if any validation fails
+    if (nameErr || emailErr || messageErr) {
       return;
     }
-    // Open the channel selection modal
+
+    // Open channel selection modal
     setShowChannelModal(true);
   };
 
@@ -64,7 +144,7 @@ const Contact = () => {
     // Open Gmail compose in new tab
     const newWindow = window.open(gmailUrl, '_blank');
     
-    // Fallback to mailto if popup blocked or prefer native client
+    // Fallback to mailto if popup blocked or native client preferred
     if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
       window.location.href = `mailto:lakshayb057@gmail.com?subject=${subject}&body=${bodyContent}`;
     }
@@ -72,7 +152,9 @@ const Contact = () => {
     setShowChannelModal(false);
     setStatus('success');
     setFormData({ name: '', email: '', message: '' });
-    setTimeout(() => setStatus(''), 6000);
+    setTouched({ name: false, email: false, message: false });
+    setErrors({ name: '', email: '', message: '' });
+    setTimeout(() => setStatus(''), 7000);
   };
 
   const handleChooseWhatsApp = () => {
@@ -93,8 +175,14 @@ const Contact = () => {
     setShowChannelModal(false);
     setStatus('success');
     setFormData({ name: '', email: '', message: '' });
-    setTimeout(() => setStatus(''), 6000);
+    setTouched({ name: false, email: false, message: false });
+    setErrors({ name: '', email: '', message: '' });
+    setTimeout(() => setStatus(''), 7000);
   };
+
+  const messageLength = formData.message.trim().length;
+  const isMessageValid = messageLength >= MIN_MESSAGE_CHARACTERS;
+  const messageProgress = Math.min(100, Math.round((messageLength / MIN_MESSAGE_CHARACTERS) * 100));
 
   return (
     <section id="contact" className="py-24 px-6 md:px-12 relative max-w-7xl mx-auto">
@@ -135,7 +223,7 @@ const Contact = () => {
             </div>
           </a>
 
-          {/* LinkedIn Card with updated verified URL */}
+          {/* LinkedIn Card with verified URL */}
           <a
             href="https://www.linkedin.com/in/lakshayb057/"
             target="_blank"
@@ -194,49 +282,122 @@ const Contact = () => {
 
         {/* Right Column: Contact Form */}
         <div className="lg:col-span-7 bg-zinc-900/40 border border-zinc-800/80 rounded-3xl p-7 sm:p-9 backdrop-blur-xl relative">
-          <form onSubmit={handleFormSubmit} className="space-y-5">
+          <form onSubmit={handleFormSubmit} noValidate className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {/* 1. Name Input with First & Last Name validation */}
               <div>
-                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
-                  Name
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
+                    Full Name
+                  </label>
+                  <span className="text-[10px] font-mono text-zinc-500">First & Last Name</span>
+                </div>
                 <input
                   type="text"
-                  required
                   placeholder="John Doe"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500 transition-colors placeholder:text-zinc-600"
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  onBlur={() => handleBlur('name')}
+                  className={`w-full bg-zinc-950 border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder:text-zinc-600 ${
+                    touched.name && errors.name
+                      ? 'border-red-500/80 focus:border-red-500 bg-red-950/10'
+                      : touched.name && !errors.name
+                      ? 'border-emerald-500/60 focus:border-emerald-500'
+                      : 'border-zinc-800 focus:border-red-500'
+                  }`}
                 />
+                {touched.name && errors.name && (
+                  <p className="flex items-center gap-1.5 text-xs font-mono text-red-400 mt-1.5">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{errors.name}</span>
+                  </p>
+                )}
               </div>
 
+              {/* 2. Email Input with Proper Format validation */}
               <div>
-                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
-                  Email
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
+                    Email Address
+                  </label>
+                  <span className="text-[10px] font-mono text-zinc-500">Valid Email</span>
+                </div>
                 <input
                   type="email"
-                  required
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500 transition-colors placeholder:text-zinc-600"
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                  className={`w-full bg-zinc-950 border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder:text-zinc-600 ${
+                    touched.email && errors.email
+                      ? 'border-red-500/80 focus:border-red-500 bg-red-950/10'
+                      : touched.email && !errors.email
+                      ? 'border-emerald-500/60 focus:border-emerald-500'
+                      : 'border-zinc-800 focus:border-red-500'
+                  }`}
                 />
+                {touched.email && errors.email && (
+                  <p className="flex items-center gap-1.5 text-xs font-mono text-red-400 mt-1.5">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{errors.email}</span>
+                  </p>
+                )}
               </div>
             </div>
 
+            {/* 3. Message Textarea with 150+ Character validation */}
             <div>
-              <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider mb-2">
-                Message
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-mono font-medium text-zinc-400 uppercase tracking-wider">
+                  Message
+                </label>
+                <div className="flex items-center gap-1.5 text-[11px] font-mono">
+                  <span className={isMessageValid ? 'text-emerald-400 font-semibold' : 'text-zinc-400'}>
+                    {messageLength} / {MIN_MESSAGE_CHARACTERS} chars
+                  </span>
+                  {isMessageValid ? (
+                    <CheckCircle size={13} className="text-emerald-400" />
+                  ) : (
+                    <span className="text-red-400 text-[10px]">
+                      ({Math.max(0, MIN_MESSAGE_CHARACTERS - messageLength)} more needed)
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <textarea
-                required
                 rows={5}
-                placeholder="How can I help you?"
+                placeholder="Write your project details, goals, or role overview here (minimum 150 characters)..."
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-red-500 transition-colors placeholder:text-zinc-600 resize-none"
+                onChange={(e) => handleChange('message', e.target.value)}
+                onBlur={() => handleBlur('message')}
+                className={`w-full bg-zinc-950 border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder:text-zinc-600 resize-none ${
+                  touched.message && errors.message
+                    ? 'border-red-500/80 focus:border-red-500 bg-red-950/10'
+                    : touched.message && !errors.message
+                    ? 'border-emerald-500/60 focus:border-emerald-500'
+                    : 'border-zinc-800 focus:border-red-500'
+                }`}
               />
+
+              {/* Progress bar towards 150 chars */}
+              <div className="w-full bg-zinc-900 h-1 rounded-full overflow-hidden mt-1.5">
+                <div 
+                  className={`h-full transition-all duration-300 ${
+                    isMessageValid 
+                      ? 'bg-emerald-500' 
+                      : 'bg-gradient-to-r from-red-600 to-rose-400'
+                  }`}
+                  style={{ width: `${messageProgress}%` }}
+                />
+              </div>
+
+              {touched.message && errors.message && (
+                <p className="flex items-center gap-1.5 text-xs font-mono text-red-400 mt-2">
+                  <AlertCircle size={13} className="shrink-0" />
+                  <span>{errors.message}</span>
+                </p>
+              )}
             </div>
 
             <button
@@ -354,7 +515,7 @@ const Contact = () => {
               <div className="p-3.5 rounded-xl bg-zinc-900/40 border border-zinc-800/60 text-xs font-mono text-zinc-500">
                 <span className="text-zinc-400 font-semibold block mb-1">Details being sent:</span>
                 <p className="truncate"><span className="text-zinc-500">From:</span> {formData.name} ({formData.email})</p>
-                <p className="truncate"><span className="text-zinc-500">Message:</span> {formData.message}</p>
+                <p className="line-clamp-2"><span className="text-zinc-500">Message:</span> {formData.message}</p>
               </div>
             </motion.div>
           </div>
